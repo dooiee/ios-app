@@ -9,3 +9,6 @@
 
 # any secrets.h files
 **/secrets.h
+
+# google service plist
+**/GoogleService-Info.plist
