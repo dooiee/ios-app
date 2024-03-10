@@ -1,0 +1,11 @@
+# .gitignore file
+
+# .vscode and .build folders
+**/.vscode/
+**/.build/
+
+# DS_Store files
+**/.DS_Store
+
+# any secrets.h files
+**/secrets.h
