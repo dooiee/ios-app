@@ -32,7 +32,14 @@ struct RFRemoteView: View {
     //FIXME: update correct signals with string/decimal array for underwater LEDS
     let rfSignals: [String] = ["", "000001010001110000000011", "", "", "", "", "", "000001010001110000001000", "", "000001010001110000001010", "000001010001110000001011", "000001010001110000001100", "000001010001110000001101", "000001010001110000001110", "000001010001110000001111", "000001010001110000010000", "000001010001110000010001", "000001010001110000010010", "000001010001110000010011", "000001010001110000010100", "000001010001110000010101"]
     
+    ///// This is correct but changing to do 33XXXX codes rather as a test.
+//    let rfDecimalSignals: [Int] = [0, 0, 0, 0, 0, 0, 16776964, 16776969, 16776967, 16776970, 16776971, 334860, 16776973, 16776974, 16776975, 16777101, 16777102, 16777103, 16777104, 16776977, 16777106]
+    
+//    let rfDecimalSignals: [Int] = [0, 0, 0, 0, 0, 0, 334855, 334856, 334857, 334858, 334859, 334860, 334861, 334862, 334863, 334864, 334865, 334866, 334867, 334868, 334869] // (24Bit) // Commented out for now- WORKING VARIABLE
     let rfDecimalSignals: [Int] = [0, 0, 0, 0, 334855, 334856, 334849, 334856, 16776964, 334858, 334859, 334860, 334861, 334862, 334863, 334864, 334865, 334866, 334867, 334868, 334869] // (24Bit)
+    
+    ///// This is the correct strings for round LEDS
+//    let rfSignals: [String] = ["", "000001010001110000000011", "", "", "", "", "111111111111111100000100", "111111111111111100001001", "111111111111111100000111", "000001010001110000001010", "000001010001110000001011", "000001010001110000001100", "111111111111111110001101", "111111111111111100001110", "111111111111111110001111", "111111111111111110001101", "111111111111111110001110", "111111111111111100001111", "111111111111111110010000", "111111111111111100010001", "111111111111111110010010"]
     
     ///// Below is all transmitted codes for the underwater LED RF remote.
     let wiredLEDRFRemoteButtonFunctions: [String] = ["Brightness", "Sleep Timer", "Power", "4H", "8H", "12H", "Flash", "White", "Fade", "Red", "Green", "Blue", "Orange", "Sea-Green", "Teal", "Orange-Yellow", "Cyan", "Indigo", "Yellow", "Azure", "Magenta"]
@@ -177,6 +184,19 @@ extension RFRemoteView {
                                     }
                                 }
                         }
+//                        if index == 3 {
+//                            Text("TEST")
+//                                .font(.system(size: 35).weight(.bold)).foregroundColor(Color.black)
+//                                .onTapGesture {
+//                                    powerState = firebaseUploadData.getCurrentRFPowerState()
+//                                    self.signalLED.toggle()
+//                                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+//                                        withAnimation {
+//                                            self.signalLED.toggle()
+//                                        }
+//                                    }
+//                                }
+//                        }
                     } // ZStack
                 } // label
             } // ForEach

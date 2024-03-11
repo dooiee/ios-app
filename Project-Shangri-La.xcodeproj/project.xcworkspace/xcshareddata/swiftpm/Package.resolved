@@ -1,5 +1,5 @@
 {
-  "originHash" : "4ad082c707e3d9982bdadb83bfd2cb9b04c687593482de6abe8b0c2cece26905",
+  "originHash" : "89f554c2ba66610adb0e158ca04505245ec89f2ef54e289cf4578a0cd8b2accc",
   "pins" : [
     {
       "identity" : "abseil-cpp-swiftpm",
@@ -20,30 +20,12 @@
       }
     },
     {
-      "identity" : "chartview",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/AppPear/ChartView",
-      "state" : {
-        "revision" : "9115a992c91fa19cbb4f2241084240d38654a1fc",
-        "version" : "1.5.5"
-      }
-    },
-    {
       "identity" : "firebase-ios-sdk",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/firebase/firebase-ios-sdk",
       "state" : {
         "revision" : "78f7087fd5d48eb7c36e299f330b6dddccd647b2",
         "version" : "8.12.1"
-      }
-    },
-    {
-      "identity" : "firebaseparser",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/Columbina/FirebaseParser",
-      "state" : {
-        "revision" : "fc69221c77b94d528c5948d0a65b5267cd57eaf3",
-        "version" : "0.0.1"
       }
     },
     {
@@ -119,21 +101,12 @@
       }
     },
     {
-      "identity" : "stockcharts",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/denniscm190/StockCharts.git",
-      "state" : {
-        "revision" : "5a374cada5703ae6da1e11f1b28afed2cc96984c",
-        "version" : "1.2.9"
-      }
-    },
-    {
       "identity" : "swift-collections",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-collections",
       "state" : {
-        "revision" : "48254824bb4248676bf7ce56014ff57b142b77eb",
-        "version" : "1.0.2"
+        "revision" : "94cf62b3ba8d4bed62680a282d4c25f9c63c2efb",
+        "version" : "1.1.0"
       }
     },
     {

@@ -1,0 +1,23 @@
+{
+  "images" : [
+    {
+      "filename" : "png-clipart-pond-liner-garden-pond-water-garden-aquatic-plants-pond-water-landscape-grass 2.png",
+      "idiom" : "universal",
+      "scale" : "1x"
+    },
+    {
+      "filename" : "png-clipart-pond-liner-garden-pond-water-garden-aquatic-plants-pond-water-landscape-grass.png",
+      "idiom" : "universal",
+      "scale" : "2x"
+    },
+    {
+      "filename" : "png-clipart-pond-liner-garden-pond-water-garden-aquatic-plants-pond-water-landscape-grass 1.png",
+      "idiom" : "universal",
+      "scale" : "3x"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

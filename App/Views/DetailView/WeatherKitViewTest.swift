@@ -82,6 +82,8 @@ struct HourlyForcastViewModel: View {
                                 .symbolRenderingMode(.multicolor)
                                 .foregroundColor(.gray)
                             Spacer()
+//                            Text("\(hourWeatherList.first?.temperature.formatted(.measurement(width: .abbreviated)) ?? "N/A")")
+//                                .font(.system(size: 16, weight: .medium))
                             Text("\((hourWeatherList.first?.temperature.converted(to: .fahrenheit).value)!, specifier: "%.0f")\u{00B0}F")
                                 .font(.system(size: 16, weight: .medium))
                             Spacer()
@@ -107,6 +109,8 @@ struct HourlyForcastViewModel: View {
                                         .foregroundColor(.gray)
                                 }
                                 Spacer()
+//                                Text(hourWeatherItem.temperature.formatted(.measurement(width: .abbreviated)))
+//                                    .font(.system(size: 16, weight: .medium))
                                 Text("\(hourWeatherItem.temperature.converted(to: .fahrenheit).value, specifier: "%.0f")\u{00B0}F")
                                     .font(.system(size: 16, weight: .medium))
                                 Spacer()
@@ -121,8 +125,6 @@ struct HourlyForcastViewModel: View {
 }
 
 struct HourlyForecastView: View {
-    //FIXME: REMOVE POND LOCATION
-    let pondLocation: CLLocation = CLLocation(latitude: 30.26426, longitude: -97.74750) // coordinates have been changed to keep pond location undisclosed
     let weatherService = WeatherService.shared
     @StateObject private var locationManager = LocationManager()
     @State private var weather: Weather?
@@ -143,9 +145,7 @@ struct HourlyForecastView: View {
         }
         .task {
             do {
-                let pondLocation: CLLocation = CLLocation(latitude: 30.26426, longitude: -97.74750) // coordinates have been changed to keep pond location undisclosed
-                self.weather = try await weatherService.weather(for: pondLocation)
-//                print(weather as Any)
+                self.weather = try await weatherService.weather(for: Secrets.POND_COORDINATES)
                 print("Returned Hourly Weather Data For The Next 24 Hours.")
             } catch {
                 print(error)
@@ -210,6 +210,22 @@ struct DailyWeatherViewModel: View {
             return 0
         }
     }
+//    var weeklyTempLow2: [Double] {
+//        if !dailyWeatherList.isEmpty {
+//            return dailyWeatherList.map({ dayWeather in
+//                let weeklyTempLow = dayWeather.highTemperature.value
+//                return weeklyTempLow
+//            })
+//        } else {
+//            return []
+//        }
+//    }
+//    func weeklyHighTemp(weeklyTempArray: [Double]) -> Double {
+//        weeklyTempArray.max()!
+//    }
+//    func weeklyLowTemp(weeklyTempArray: [Double]) -> Double {
+//        weeklyTempArray.min()!
+//    }
     
     var currentTemperature: Double
 //    let gradient = LinearGradient(colors: [.green, .yellow, .orange, .red], startPoint: .bottom, endPoint: .top)
@@ -235,6 +251,8 @@ struct DailyWeatherViewModel: View {
                                 .foregroundColor(.gray).frame(width:25.0)
                             Text("\((dailyWeatherList.first?.lowTemperature.converted(to: .fahrenheit).value)!, specifier: "%.0f")\u{00B0}F")
                                 .font(.system(size: 16, weight: .medium)).frame(width:40.0)
+                            //                    Text(dailyWeatherList.first?.lowTemperature.formatted() ?? "")
+                            //                        .font(.system(size: 16, weight: .medium)).frame(width:40.0)
                             if !dailyWeatherList.isEmpty {
                                 ZStack (alignment:.center){
                                     Gauge(value: weeklyTempLow, in: weeklyTempLow...weeklyTempHigh) {
@@ -252,6 +270,8 @@ struct DailyWeatherViewModel: View {
                             }
                             Text("\((dailyWeatherList.first?.highTemperature.converted(to: .fahrenheit).value)!, specifier: "%.0f")\u{00B0}F")
                                 .font(.system(size: 16, weight: .medium))
+//                            Text(dailyWeatherList.first?.highTemperature.formatted() ?? "")
+//                                .font(.system(size: 16, weight: .medium))
                         }
                         Divider().background(Color.secondary).padding(.horizontal, 3.0)
                         //                .frame(width: .infinity, alignment: .leading)
@@ -272,6 +292,8 @@ struct DailyWeatherViewModel: View {
                                 }
                                 Text("\((dailyWeather.lowTemperature.converted(to: .fahrenheit).value), specifier: "%.0f")\u{00B0}F")
                                     .font(.system(size: 16, weight: .medium)).frame(width:40.0)
+                                //                        Text(dailyWeather.lowTemperature.formatted())
+                                //                            .font(.system(size: 16, weight: .medium)).frame(width:40.0)
                                 
                                 ZStack (alignment:.center){
                                     Gauge(value: weeklyTempLow, in: weeklyTempLow...weeklyTempHigh) {
@@ -288,6 +310,8 @@ struct DailyWeatherViewModel: View {
                                 }
                                 Text("\((dailyWeather.highTemperature.converted(to: .fahrenheit).value), specifier: "%.0f")\u{00B0}F")
                                     .font(.system(size: 16, weight: .medium))
+                                //                        Text(dailyWeather.highTemperature.formatted())
+                                //                            .font(.system(size: 16, weight: .medium))
                             }
                             //                    .frame(width: .infinity, alignment: .leading)
                             Divider().background(Color.secondary).padding(.horizontal, 3.0)
@@ -334,9 +358,7 @@ struct DailyWeatherView: View {
             }
             .task {
                 do {
-                    let pondLocation: CLLocation = CLLocation(latitude: 30.26426, longitude: -97.74750) // coordinates have been changed to keep pond location undisclosed
-                    self.weather = try await weatherService.weather(for: pondLocation)
-//                    print(weather as Any)
+                    self.weather = try await weatherService.weather(for: Secrets.POND_COORDINATES)
                     print("Returned Daily Weather Data For The Week.")
                 } catch {
                     print(error)
@@ -381,6 +403,17 @@ struct DailyWeatherViewModel2: View {
                         .multilineTextAlignment(.leading)
                 }
             }
+//            ScrollView (.horizontal) {
+//                HStack (spacing: 20){
+//                    ForEach(dailyWeatherList, id: \.date) { dailyWeatherItem in
+//                        VStack {
+//                            Text("\(dailyWeatherItem.date.formatAsAbbreviatedDay())")
+//                            Text("\(dailyWeatherItem.rainfallAmount.formatted())")
+//                            Text("\(dailyWeatherItem.precipitationChance*100, specifier: "%.0f")%")
+//                        }
+//                    }
+//                }.padding()
+//            }
         }
     }
 }
@@ -407,10 +440,8 @@ struct DailyWeatherView2: View {
             }
             .task {
                 do {
-                    let pondLocation: CLLocation = CLLocation(latitude: 30.26426, longitude: -97.74750) // coordinates have been changed to keep pond location undisclosed
-                    self.weather = try await weatherService.weather(for: pondLocation)
+                    self.weather = try await weatherService.weather(for: Secrets.POND_COORDINATES)
                     print("Returned Weather Rainfall Data For The Next 72 Hours.")
-//                    print(weather as Any)
                 } catch {
                     print(error)
                 }
@@ -444,10 +475,7 @@ struct CurrentWeatherView: View {
         }
         .task {
             do {
-                //FIXME: REMOVE POND LOCATION BEFORE UPLOADING
-                let pondLocation: CLLocation = CLLocation(latitude: 30.26426, longitude: -97.74750) // coordinates have been changed to keep pond location undisclosed
-                self.weather = try await weatherService.weather(for: pondLocation, including: .current)
-//                print(weather as Any)
+                self.weather = try await weatherService.weather(for: Secrets.POND_COORDINATES, including: .current)
                 print("Returned Current Weather Data.")
             } catch {
                 print(error)

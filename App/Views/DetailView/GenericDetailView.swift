@@ -15,14 +15,15 @@ import CoreLocation
 struct GenericDetailView: View {
     
     @Environment(\.currentTab) var tab
-    
     @Environment(\.colorScheme) var colorScheme
     @Environment(\.presentationMode) var presentationMode
     @Namespace private var namespace
     @EnvironmentObject private var vm: FirebaseDataService
     @StateObject private var fvm = FirebaseDataService()
     @StateObject private var fdr = FirebaseDataRetreivalForInterval()
+    @EnvironmentObject var userSettings: UserSettings
     @State var selected: String = "1D"
+    // @Binding var defaultPlotInterval: String
     let weatherService = WeatherService.shared
     @State private var weather: CurrentWeather?
     @State var showSettingsPage: Bool = false
@@ -34,7 +35,6 @@ struct GenericDetailView: View {
     
     let plotIntervals: [String] = ["LIVE", "1D", "1W", "1M", "3M", "1Y", "ALL"]
     let timestampIntervals: [Int] = [1_000*60*60, 1_000*60*60*23, 1_000*60*60*24*7, 1_000*60*60*24*30, 1_000*60*60*24*90, 1_000*60*60*24*365, Int(Date().timeIntervalSinceReferenceDate*1_000)] // changed the 1D time from 24 hours to 23 to stop values from 24 hours ago affecting average value of the current hour which yielded incorrect plot value.
-    let pondLocation: CLLocation = CLLocation(latitude: 30.26426, longitude: -97.74750) // coordinates have been changed to keep pond location undisclosed
     
     let column: [GridItem] = [
         GridItem(.flexible(), spacing: nil, alignment: nil)]
@@ -55,7 +55,7 @@ struct GenericDetailView: View {
                         .fontWeight(.semibold)
                     Spacer()
                     Button(action: { withAnimation(.spring()) { showSettingsPage.toggle() } }) {
-                        Image(systemName: "gearshape.fill").foregroundColor(Color.primary).scaleEffect(1.3)
+                        Image(systemName: "gearshape.fill").foregroundColor(colorScheme == .light ? Color.black : Color.secondary).scaleEffect(1.3)
                     }
                 }.padding(.horizontal)
 //                    .fullScreenCover(isPresented: $showSettingsPage) {
@@ -90,7 +90,7 @@ struct GenericDetailView: View {
                             }
                         }
                     )
-            }                
+            }               
         } // ZStack
     } // View
 } // struct
@@ -116,8 +116,14 @@ extension GenericDetailView {
             }
         }
         .onAppear {
-            selected = GenericViewSettings(showSettingsPage: $showSettingsPage).defaultPlotInterval
-            DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+            selected = userSettings.defaultPlotInterval
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                fdr.fetchFirebaseDataForInterval(parameter: title, for: timestampIntervals[plotIntervals.firstIndex(of: selected)!])
+            }
+        }
+        .onChange(of: userSettings.defaultPlotInterval) { newValue in
+            selected = newValue
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                 fdr.fetchFirebaseDataForInterval(parameter: title, for: timestampIntervals[plotIntervals.firstIndex(of: selected)!])
             }
         }
@@ -128,8 +134,17 @@ extension GenericDetailView {
     private var placeholderPlotWhileFetchingData: some View {
         ZStack {
             let chartStyle = ChartStyle(backgroundColor: Color("LightDarkModeChartBackground"), accentColor: accentColor.opacity(0.8), secondGradientColor: accentColor.opacity(0.8), textColor: Color.primary, legendTextColor: Color.primary, dropShadowColor: Color.primary)
+//            LineView(data: [0.0], title: title, legend: String(" ") + "XXXX", style: chartStyle, dataKeys: [""]).frame(height: 350).redacted(reason: .placeholder).padding(.horizontal, 5.0)
             VStack {
+//                Spacer()
+                // commenting out title section
+//                HStack {
+//                    Text(title).font(.title).bold().foregroundColor(Color.primary).padding(.leading, 5.0).offset(y: 12)
+//                    Spacer()
+//                }
                 LineView(data: [0.0], legend: String(" ") + "XXXX", style: chartStyle, dataKeys: [""]).padding(.horizontal, 5.0).redacted(reason: .placeholder)
+//                    .offset(y: -20) //changed from -17.5
+//                Spacer()
             }
             .frame(height: 315) // changed from 350
             VStack {
@@ -141,10 +156,34 @@ extension GenericDetailView {
     private var placeholderPlotErrorFetchingData: some View {
         ZStack {
             let chartStyle = ChartStyle(backgroundColor: Color("LightDarkModeChartBackground"), accentColor: accentColor.opacity(0.8), secondGradientColor: accentColor.opacity(0.8), textColor: Color.primary, legendTextColor: Color.primary, dropShadowColor: Color.primary)
+            //            LineView(data: [0.0], title: title, legend: String(" ") + "XXXX", style: chartStyle, dataKeys: [""]).frame(height: 350).redacted(reason: .placeholder).padding(.horizontal, 5.0)
             VStack {
+//                Spacer()
+                // commenting out title section
+//                HStack {
+//                    Text(title).font(.title).bold().foregroundColor(Color.primary).padding(.leading, 5.0).offset(y: 12)
+//                    Spacer()
+//                }
                 LineView(data: [0.0], legend: String(" ") + "XXXX", style: chartStyle, dataKeys: [""]).padding(.horizontal, 5.0).redacted(reason: .placeholder)
+//                    .offset(y: -20)//changed from -17.5
+//                Spacer()
             }
             .frame(height: 315) // changed from 350
+            /* // overlay used to line up LineView with LineView that shows the title while loading.
+             //            ZStack {
+             //                LineView(data: [0.0], title: title, legend: String(" "), style: chartStyle, dataKeys: [""]).frame(height: 350).padding(.horizontal, 5.0).redacted(reason: .placeholder)
+             //                VStack {
+             //                    Spacer()
+             //                    HStack {
+             //                        Text(title).font(.title).bold().foregroundColor(Color.primary).padding(.leading, 5.0).offset(y: 12)
+             //                        Spacer()
+             //                    }
+             //                    LineView(data: [0.0], legend: String(" ") + "XXXX", style: chartStyle, dataKeys: [""]).padding(.horizontal, 5.0).redacted(reason: .placeholder).offset(y: -17.5)
+             //                    Spacer()
+             //                }
+             //                .frame(height: 350)
+             //            }
+             */
             VStack {
                 Image(systemName: "exclamationmark.triangle").foregroundColor(accentColor).padding(.all).padding(.bottom, -5.0)
                 Text("Error Fetching Data...").font(.subheadline).foregroundColor(Color.secondary)
@@ -153,6 +192,7 @@ extension GenericDetailView {
     }
     @ViewBuilder private func plotWithFetchedData(orderedDictForInterval: OrderedDictionary<String, Double>) -> some View {
         let chartStyle = ChartStyle(backgroundColor: Color("LightDarkModeChartBackground"), accentColor: accentColor.opacity(0.8), secondGradientColor: accentColor.opacity(0.8), textColor: Color.primary, legendTextColor: Color.primary, dropShadowColor: Color.primary)
+//        LineView(data: orderedDictForInterval.values.elements, title: title, legend: legendUnits, style: chartStyle, dataKeys: orderedDictForInterval.keys.elements).frame(height: 350).padding(.horizontal, 5.0)
         LineView(data: orderedDictForInterval.values.elements, legend: legendUnits, style: chartStyle, dataKeys: orderedDictForInterval.keys.elements) // removed title
             .padding(.horizontal, 5.0)
 //            .offset(y: -20)
@@ -298,9 +338,7 @@ extension GenericDetailView {
             }
             .task {
                 do {
-                    let pondLocation: CLLocation = CLLocation(latitude: 30.26426, longitude: -97.74750) // coordinates have been changed to keep pond location undisclosed
-                    self.weather = try await weatherService.weather(for: pondLocation, including: .current)
-//                    print(weather as Any)
+                    self.weather = try await weatherService.weather(for: Secrets.POND_COORDINATES, including: .current)
                     print("Returned Current Weather Data.")
                 } catch {
                     print(error)
@@ -315,5 +353,6 @@ extension GenericDetailView {
 struct GenericDetailView_Previews: PreviewProvider {
     static var previews: some View {
         GenericDetailView(title: "Parameter Title", legendUnits: "Parameter Units", accentColor: Color.theme.accent)
+            .environmentObject(UserSettings())
     }
 }

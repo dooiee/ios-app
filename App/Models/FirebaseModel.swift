@@ -5,80 +5,7 @@
 //  Created by Nick Doolittle on 3/9/22.
 //
 
-// This file was generated from JSON Schema using quicktype, do not modify it directly.
-// To parse the JSON, add this file to your project and do:
-//
-//   let welcome = try? newJSONDecoder().decode(Welcome.self, from: jsonData)
-
 import Foundation
-
-// Sample PondData Json //
-/*
- SamplePondData JSON response:
- 
- {
-   "Data Log" : {
-     "Temperature" : {
-       "Last Updated At" : "1646925104",
-       "Value" : "73.62"
-     },
-     "Total Dissolved Solids" : {
-       "Last Updated At" : "1646925104",
-       "Value" : "16"
-     },
-     "Turbidity" : {
-       "Last Updated At" : "1646925104",
-       "Value" : "0"
-     },
-     "Water Level" : {
-       "Last Updated At" : "1646925104",
-       "Value" : "0.96"
-     }
-   },
-   "Interval Log 5min" : {
-     "-MxpSVSLIIcb2jesDd_i" : {
-       "Temperature" : "73.62",
-       "Timestamp" : "1646925143",
-       "Total Dissolved Solids" : "15",
-       "Turbidity" : "3000",
-       "Water Level" : "0.14"
-     },
-     "-MxpSgbYypJhw0qMFpbb" : {
-       "Temperature" : "73.62",
-       "Timestamp" : "1646925193",
-       "Total Dissolved Solids" : "15",
-       "Turbidity" : "3000",
-       "Water Level" : "0.47"
-     }
-   },
-   "Mock Data Log" : {
-     "1646925143" : {
-       "Temperature" : 73.625,
-       "Timestamp" : 1646943144048,
-       "Total Dissolved Solids" : 15,
-       "Turbidity" : 3000,
-       "Water Level" : 0.1437
-     },
-     "1646925193" : {
-       "Temperature" : 73.625,
-       "Timestamp" : 1646943193858,
-       "Total Dissolved Solids" : 15,
-       "Turbidity" : 3000,
-       "Water Level" : 0.47165
-     }
-   },
-   "Pond Parameters" : {
-     "Temperature" : 73.625,
-     "Total Dissolved Solids" : 15,
-     "Turbidity Value" : 0,
-     "Turbidity Voltage" : 4.8547,
-     "Water Level" : 1.83031
-   }
- }
- 
- 
- */
-
 
 // MARK: - FirebaseModel
 struct FirebaseModel: Identifiable, Codable {
@@ -169,6 +96,38 @@ struct MockDataLog: Codable, Hashable {
     }
 }
 
+// MARK: - SensorDataLog (added 5/12/23 as test)
+struct SensorDataLog: Codable, Hashable {
+    var temperature: Double
+    var timestamp, totalDissolvedSolids, turbidity: Int
+//    var turbidityVoltage: Double // comment out for now
+    var waterLevel: Double
+    var pH: Double
+
+    enum CodingKeys: String, CodingKey {
+        case temperature = "temperature"
+        case timestamp = "timestamp"
+        case totalDissolvedSolids = "totalDissolvedSolids"
+        case turbidity = "turbidity"
+//        case turbidityVoltage = "turbidityVoltage"
+        case waterLevel = "waterLevel"
+        case pH = "pH"
+    }
+    
+    init(temperature: Double, timestamp: Int, totalDissolvedSolids: Int, turbidity: Int, waterLevel: Double, pH: Double) {
+
+//    init(temperature: Double, timestamp: Int, totalDissolvedSolids: Int, turbidity: Int, turbidityVoltage: Double, waterLevel: Double, pH: Double) {
+        
+        self.temperature = temperature
+        self.timestamp = timestamp
+        self.totalDissolvedSolids = totalDissolvedSolids
+        self.turbidity = turbidity
+//        self.turbidityVoltage = turbidityVoltage
+        self.waterLevel = waterLevel
+        self.pH = pH
+    }
+}
+
 // MARK: - PondParameters: Original current working model
 struct PondParameters: Codable, Hashable, Identifiable {
     var id = UUID().uuidString
@@ -178,11 +137,11 @@ struct PondParameters: Codable, Hashable, Identifiable {
     let pH: Double
 
     enum CodingKeys: String, CodingKey {
-        case temperature = "Temperature"
-        case totalDissolvedSolids = "Total Dissolved Solids"
-        case turbidityValue = "Turbidity Value"
-        case turbidityVoltage = "Turbidity Voltage"
-        case waterLevel = "Water Level"
+        case temperature = "temperature"
+        case totalDissolvedSolids = "totalDissolvedSolids"
+        case turbidityValue = "turbidity"
+        case turbidityVoltage = "turbidityVoltage"
+        case waterLevel = "waterLevel"
         case pH = "pH"
     }
 }

@@ -1,13 +1,13 @@
 //
-//  ArduinoControlView.swift
+//  SystemStatusView.swift
 //  Project-Shangri-La
 //
-//  Created by Nick Doolittle on 7/31/22.
+//  Created by Nick Doolittle on 5/11/23.
 //
 
 import SwiftUI
 
-struct ArduinoControlView: View {
+struct SystemStatusView: View {
     @Environment(\.colorScheme) var colorScheme
     @Environment(\.presentationMode) var presentationMode
     @Environment(\.openURL) var openURL
@@ -37,6 +37,9 @@ struct ArduinoControlView: View {
             VStack {
                 headerSection
                 List {
+                    centralHubStatusSection
+                    peripheralStatusSection
+                    rfTransmitterStatusSection
                     wifiStatusSection
                     onlineSinceSection
                     resetStatusSection
@@ -83,7 +86,7 @@ struct ArduinoControlView: View {
     }
 }
 
-extension ArduinoControlView {
+extension SystemStatusView {
     private var headerSection: some View {
         HStack {
             Button {
@@ -95,7 +98,7 @@ extension ArduinoControlView {
                     .padding()
             }
             Spacer()
-            Text("Arduino Status").font(.title2).bold()
+            Text("System Status").font(.title2).bold()
             Spacer()
             Button {
             } label: {
@@ -105,6 +108,140 @@ extension ArduinoControlView {
                     .padding()
             }
         }
+    }
+    private var centralHubStatusSection: some View {
+        ForEach (firebaseArduinoControl.arduinoStatus, id: \.self) { parameter in
+            Section(header: Text("Central Hub")) {
+                HStack {
+                    Image(systemName: "wifi.square.fill").symbolRenderingMode(.multicolor)
+                        .imageScale(.large).padding(.trailing, 2.0).offset(x: -1)
+                    Text("MKR 1010")
+                    Spacer()
+                    if parameter.wifiStatus == 3 {
+                        Text("Connected")
+                    }
+                    else if parameter.wifiStatus == 6 {
+                        Text("Disconnected")
+                    }
+                    else {
+                        Text("Not Connected")
+                    }
+                    Text("(\(parameter.wifiStatus))")
+                }
+                HStack {
+                    Image(systemName: "wifi.square.fill").symbolRenderingMode(.multicolor)
+                        .imageScale(.large).padding(.trailing, 2.0).offset(x: -1)
+                    Text("Nano 33 IoT")
+                    Spacer()
+                    if parameter.wifiStatus == 3 {
+                        Text("Connected")
+                    }
+                    else if parameter.wifiStatus == 6 {
+                        Text("Disconnected")
+                    }
+                    else {
+                        Text("Not Connected")
+                    }
+                    Text("(\(parameter.wifiStatus))")
+                }
+                HStack {
+                    Image(systemName: "clock.badge.checkmark.fill").symbolRenderingMode(.palette).foregroundStyle(Color.green, Color.cyan)
+                        .imageScale(.large).padding(.trailing, 5.0)
+                    Text("Online Since:").font(.callout)
+                    Spacer()
+                    Text("\(parameter.onlineSince.latest.convertStringToTimestamp(dateformat: "EEE MM/dd @ h:mm a"))").font(.callout)
+                }
+                HStack {
+                    Image(systemName: "wifi.square.fill").symbolRenderingMode(.multicolor)
+                        .imageScale(.large).padding(.trailing, 2.0).offset(x: -1)
+                    Text("Peripheral BLE")
+                    Spacer()
+                    if parameter.wifiStatus == 3 {
+                        Text("Connected")
+                        Circle()
+                            .foregroundColor(Color.theme.batteryGreen)
+                            .frame(width: 12.0, height: 12.0)
+                            .padding(.horizontal, 2)
+                    }
+                    else if parameter.wifiStatus == 6 {
+                        Text("Disconnected")
+                    }
+                    else {
+                        Text("Not Connected")
+                    }
+                }
+            } // Section
+        } // ForEach
+    }
+    private var peripheralStatusSection: some View {
+        ForEach (firebaseArduinoControl.arduinoStatus, id: \.self) { parameter in
+            Section(header: Text("Pond Sensor Controller")) {
+                HStack {
+                    Image(systemName: "wifi.square.fill").symbolRenderingMode(.multicolor)
+                        .imageScale(.large).padding(.trailing, 2.0).offset(x: -1)
+                    Text("Peripheral BLE")
+                    Spacer()
+                    if parameter.wifiStatus == 3 {
+                        Text("Connected")
+                        Circle()
+                            .foregroundColor(Color.theme.batteryGreen)
+                            .frame(width: 12.0, height: 12.0)
+                            .padding(.horizontal, 2)
+                    }
+                    else if parameter.wifiStatus == 6 {
+                        Text("Disconnected")
+                    }
+                    else {
+                        Text("Not Connected")
+                    }
+                }
+                HStack {
+                    Image(systemName: "clock.badge.checkmark.fill").symbolRenderingMode(.palette).foregroundStyle(Color.green, Color.cyan)
+                        .imageScale(.large).padding(.trailing, 5.0)
+                    Text("Online Since:").font(.callout)
+                    Spacer()
+                    Text("\(parameter.onlineSince.latest.convertStringToTimestamp(dateformat: "EEE MM/dd @ h:mm a"))").font(.callout)
+                }
+            } // Section
+        } // ForEach
+    }
+    private var rfTransmitterStatusSection: some View {
+        ForEach (firebaseArduinoControl.arduinoStatus, id: \.self) { parameter in
+            Section(header: Text("Underwater LED Controller")) {
+                HStack {
+                    Image(systemName: "wifi.square.fill").symbolRenderingMode(.multicolor)
+                        .imageScale(.large).padding(.trailing, 2.0).offset(x: -1)
+                    Text("ESP32")
+                    Spacer()
+                    if parameter.wifiStatus == 3 {
+                        Text("Connected")
+                    }
+                    else if parameter.wifiStatus == 6 {
+                        Text("Disconnected")
+                    }
+                    else {
+                        Text("Not Connected")
+                    }
+                    Text("(\(parameter.wifiStatus))")
+                }
+                HStack {
+                    Image(systemName: "wifi.square.fill").symbolRenderingMode(.multicolor)
+                        .imageScale(.large).padding(.trailing, 2.0).offset(x: -1)
+                    Text("Nano 33 IoT")
+                    Spacer()
+                    if parameter.wifiStatus == 3 {
+                        Text("Connected")
+                    }
+                    else if parameter.wifiStatus == 6 {
+                        Text("Disconnected")
+                    }
+                    else {
+                        Text("Not Connected")
+                    }
+                    Text("(\(parameter.wifiStatus))")
+                }
+            } // Section
+        } // ForEach
     }
     private var wifiStatusSection: some View {
         ForEach (firebaseArduinoControl.arduinoStatus, id: \.self) { parameter in
@@ -339,8 +476,8 @@ extension ArduinoControlView {
     }
 }
 
-struct ArduinoControlView_Previews: PreviewProvider {
+struct SystemStatusView_Previews: PreviewProvider {
     static var previews: some View {
-        ArduinoControlView()
+        SystemStatusView()
     }
 }
