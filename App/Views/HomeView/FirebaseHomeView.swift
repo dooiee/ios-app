@@ -28,22 +28,17 @@ struct BackgroundBlurView: UIViewRepresentable{
 }
 
 struct FirebaseHomeView: View {
-    
     enum Tab {
-            case home
-            case temperature
-            case waterLevel
-            case pH
-            case tds
-            case turbidity
-        }
+        case home, temperature, waterLevel, pH, tds, turbidity
+    }
     
     @State var selectTab: Tab = .home
     @State var offsetArduinoTab = CGSize.zero
+    @State var offsetControlPanelTab = CGSize.zero
     
     @Environment(\.colorScheme) var colorScheme
     @EnvironmentObject private var vm: FirebaseDataService
-    @StateObject private var viewModel = ViewModel()
+    @EnvironmentObject var userSettings: UserSettings // was private at first
     @StateObject private var firebaseViewModel = FirebaseViewModel()
     @StateObject private var firebaseDataRetreival = FirebaseDataRetreivalForInterval()
     @StateObject private var firebaseUploadData = FirebaseUploadData()
@@ -52,41 +47,37 @@ struct FirebaseHomeView: View {
     @State var showHealthSheet: Bool = false
     @State private var listRowsVisible: Bool = true
     @State private var remoteControlsVisible: Bool = true
+
+    // variables to toggle each sheet view of pondControlSection
     @State private var showArduinoControl: Bool = false
     @State var showRFRemote: Bool = false
     @State var showRFRemote2: Bool = false
     @State var showSolenoidControl: Bool = false
+    @State var showRTSPStreamPage: Bool = false
+    
     @State var parametersOutOfSpec: Int = 0
-//    @State var selectTab: Int = 0
     @State var animateValueChange: Bool = false
     @State var isLoading: Bool = false
-    
-    @State var temperatureValueChanged: Bool = false
-    @State var waterLevelValueChanged: Bool = false
-    @State var turbidityValueChanged: Bool = false
-    @State var tdsValueChanged: Bool = false
-    @State var pHValueChanged: Bool = false
     
     let backgroundOpacityValue: Double = 0.5
     let rectangleHeight: CGFloat = 85
     let cornerRadius: CGFloat = 16
     let lastDayInterval: Int = 1_000*60*60*24
     
+    // constants for loading bar animation in sensorDataSection
     let parameterLoadingOpacityValue: Double = 0.2
     let parameterLoadingBoxWidth: CGFloat = 40
     let parameterLoadingBoxHeight: CGFloat = 15
     let parameterLoadingScaleEffect: CGFloat = 1.05
     let parameterLoadingCornerRadius: CGFloat = 5
     let parameterLoadingBarDuration: Double = 1.2
-
-    @State var lastTemperatureValueForOnChanged: Double? = nil
-    @State var lastWaterLevelValueForOnChanged: Double? = nil
-    @State var lastTurbidityValueForOnChanged: Int? = nil
-    @State var lastTDSValueForOnChanged: Int? = nil
-    @State var lastpHValueForOnChanged: Double? = nil
     
     @State var waterOutOfSpec: Bool = false
     @State var recordRotationAngleValue: Angle = Angle(degrees: 0)
+
+    // Create a dictionary to hold the last value and changed state for each parameter
+    @State var lastValuesForOnChanged: [String: Any] = [:]
+    @State var valueChangedFlags: [String: Bool] = [:]
     
     var body: some View {
         TabView(selection: $selectTab) {
@@ -101,79 +92,6 @@ struct FirebaseHomeView: View {
                                 isLoading.toggle()
                                 }
                             }
-                            .onChange(of: firebaseViewModel.pondParameters) { newValue in
-                                //MARK: Temperature
-                                if lastTemperatureValueForOnChanged == nil {
-                                    lastTemperatureValueForOnChanged = newValue[0].temperature
-                                }
-                                if lastTemperatureValueForOnChanged != newValue[0].temperature {
-//                                    valueChanged.toggle()
-                                    lastTemperatureValueForOnChanged = newValue[0].temperature
-                                    withAnimation(.easeOut(duration: 0.2)) {
-                                        temperatureValueChanged.toggle()
-                                        lastTemperatureValueForOnChanged = newValue[0].temperature
-                                    }
-                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                                        temperatureValueChanged.toggle()
-                                    }
-                                }
-                                //MARK: Water Level
-                                if lastWaterLevelValueForOnChanged == nil {
-                                    lastWaterLevelValueForOnChanged = newValue[0].waterLevel
-                                }
-                                if lastWaterLevelValueForOnChanged != newValue[0].waterLevel {
-                                    lastWaterLevelValueForOnChanged = newValue[0].waterLevel
-                                    withAnimation(.easeOut(duration: 0.2)) {
-                                        waterLevelValueChanged.toggle()
-                                        lastWaterLevelValueForOnChanged = newValue[0].waterLevel
-                                    }
-                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                                        waterLevelValueChanged.toggle()
-                                    }
-                                }
-                                //MARK: Turbidity
-                                if lastTurbidityValueForOnChanged == nil {
-                                    lastTurbidityValueForOnChanged = newValue[0].turbidityValue
-                                }
-                                if lastTurbidityValueForOnChanged != newValue[0].turbidityValue {
-                                    lastTurbidityValueForOnChanged = newValue[0].turbidityValue
-                                    withAnimation(.easeOut(duration: 0.2)) {
-                                        turbidityValueChanged.toggle()
-                                        lastTurbidityValueForOnChanged = newValue[0].turbidityValue
-                                    }
-                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                                        turbidityValueChanged.toggle()
-                                    }
-                                }
-                                //MARK: TDS
-                                if lastTDSValueForOnChanged == nil {
-                                    lastTDSValueForOnChanged = newValue[0].totalDissolvedSolids
-                                }
-                                if lastTDSValueForOnChanged != newValue[0].totalDissolvedSolids {
-                                    lastTDSValueForOnChanged = newValue[0].totalDissolvedSolids
-                                    withAnimation(.easeOut(duration: 0.2)) {
-                                        tdsValueChanged.toggle()
-                                        lastTDSValueForOnChanged = newValue[0].totalDissolvedSolids
-                                    }
-                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                                        tdsValueChanged.toggle()
-                                    }
-                                }
-                                //MARK: pH
-                                if lastpHValueForOnChanged == nil {
-                                    lastpHValueForOnChanged = newValue[0].pH
-                                }
-                                if lastpHValueForOnChanged != newValue[0].pH {
-                                    lastpHValueForOnChanged = newValue[0].pH
-                                    withAnimation(.easeOut(duration: 0.2)) {
-                                        pHValueChanged.toggle()
-                                        lastpHValueForOnChanged = newValue[0].pH
-                                    }
-                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
-                                        pHValueChanged.toggle()
-                                    }
-                                }
-                            }
                         VStack {
                             if listRowsVisible {
                                 lastUpdatedAtListRow.transition(.opacity.combined(with: .move(edge: .top)))
@@ -182,56 +100,74 @@ struct FirebaseHomeView: View {
                         pondControlSection
                     }
                 }
-                
-            }//.tag(0) //changing to fix bug
-                .tag(Tab.home).environment(\.currentTab, $selectTab)
-            GenericDetailView(title: "Temperature", legendUnits: "\u{00B0}", accentColor: Color.theme.accent)//.tag(1)
+            }.tag(Tab.home).environment(\.currentTab, $selectTab)
+            GenericDetailView(title: "Temperature", legendUnits: "\u{00B0}", accentColor: Color.theme.accent)
                 .tag(Tab.temperature).environment(\.currentTab, $selectTab)
-            GenericDetailView(title: "Water Level", legendUnits: " in", accentColor: Color.theme.accentBabyBlue)//.tag(2)
+            GenericDetailView(title: "Water Level", legendUnits: " in", accentColor: Color.theme.accentBabyBlue)
                 .tag(Tab.waterLevel).environment(\.currentTab, $selectTab)
-            GenericDetailView(title: "pH", legendUnits: "", accentColor: Color.theme.accentGreen)//.tag(3)
+            GenericDetailView(title: "pH", legendUnits: "", accentColor: Color.theme.accentGreen)
                 .tag(Tab.pH).environment(\.currentTab, $selectTab)
-            GenericDetailView(title: "Total Dissolved Solids", legendUnits: " ppm", accentColor: Color.theme.accentPeach)//.tag(4)
+            GenericDetailView(title: "Total Dissolved Solids", legendUnits: " ppm", accentColor: Color.theme.accentPeach)
                 .tag(Tab.tds).environment(\.currentTab, $selectTab)
-            GenericDetailView(title: "Turbidity", legendUnits: " NTU", accentColor: Color.theme.accentLavender)//.tag(5)
+            GenericDetailView(title: "Turbidity", legendUnits: " NTU", accentColor: Color.theme.accentLavender)
                 .tag(Tab.turbidity).environment(\.currentTab, $selectTab)
         }
         .tabViewStyle(PageTabViewStyle())
         .indexViewStyle(.page(backgroundDisplayMode: .interactive))
         .ignoresSafeArea(.all)
+        .onChange(of: firebaseViewModel.pondParameters) { newValue in
+            handleValueChangeAnimation(for: "temperature", in: newValue[0].temperature)
+            handleValueChangeAnimation(for: "waterLevel", in: newValue[0].waterLevel)
+            handleValueChangeAnimation(for: "turbidityValue", in: newValue[0].turbidityValue)
+            handleValueChangeAnimation(for: "totalDissolvedSolids", in: newValue[0].totalDissolvedSolids)
+            handleValueChangeAnimation(for: "pH", in: newValue[0].pH)
+        }
     }
 }
                 
 struct FirebaseHomeView_Previews: PreviewProvider {
     static var previews: some View {
-        FirebaseHomeView()
+        FirebaseHomeView().environmentObject(UserSettings())
     }
 }
 
 extension FirebaseHomeView {
-    
     private var headerSection: some View {
-        ZStack (alignment: .top) { // for header
-//            LinearGradient(colors: [Color.theme.background.opacity(0.8), Color.theme.background.opacity(backgroundOpacityValue)], startPoint: .top, endPoint: .bottom).ignoresSafeArea(.all)
+        ZStack (alignment: .top) { 
             LinearGradient(colors: colorScheme == .light ? [Color.theme.background.opacity(0.8), Color.theme.background.opacity(backgroundOpacityValue)] : [Color.black], startPoint: .top, endPoint: .bottom).ignoresSafeArea(.all)
-                HStack (alignment: .center) {
-                    navigationBarRecordIcon
-                    Spacer()
-                    Text("Project Shangri-La")
-                        .fontWeight(.bold)
-                        .foregroundColor(Color.primary)
-                    .font(.system(size: 20))
-                    Spacer()
-                    navigationBarHealthIconButtonSheet
-                }
-                .padding(.horizontal)
+            HStack (alignment: .center) {
+                navigationBarRecordIcon
+                Spacer()
+                Text("Project Shangri-La")
+                    .fontWeight(.bold)
+                    .foregroundColor(Color.primary)
+                .font(.system(size: 20))
+                Spacer()
+                navigationBarHealthIconButtonSheet
+            }
+            .padding(.horizontal)
         }
         .frame(height: 60)
     }
-    
+
+    // function that handles value changes of the realtime sesnsor values and performs smooth animations
+    func handleValueChangeAnimation<T: Equatable>(for key: String, in newValue: T) {
+        if lastValuesForOnChanged[key] == nil {
+            lastValuesForOnChanged[key] = newValue
+        }
+        if lastValuesForOnChanged[key] as? T != newValue {
+            lastValuesForOnChanged[key] = newValue
+            withAnimation(.easeOut(duration: 0.2)) {
+                valueChangedFlags[key] = true
+            }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
+                valueChangedFlags[key] = false
+            }
+        }
+    }
+
     private var sensorDataSection: some View {
         VStack (alignment: .leading, spacing: 5.0) { // was 2 spacing
-            //Spacer()
             HStack {
                 Text("Sensor Data").font(.subheadline)
                     .foregroundColor(Color.secondary)
@@ -263,7 +199,7 @@ extension FirebaseHomeView {
     }
     
     private var pondControlSection: some View {
-        VStack (alignment: .leading, spacing: 5) {
+        VStack (alignment: .leading, spacing: 5.0) {
             HStack {
                 Text("Pond Control").font(.subheadline)
                     .foregroundColor(Color.secondary)
@@ -397,8 +333,28 @@ extension FirebaseHomeView {
                                 .background(Color.clear)
                         } })
                     .withPressableStyle()
-                    .fullScreenCover(isPresented: $showRFRemote2, content: { FirebaseTemperatureDetailViewChart() })
                     .transition(.opacity.combined(with: .move(edge: .bottom)).combined(with: .scale))
+                    // TODO: (03/10/2023) - This was commented out because it was causing a build error.
+                    // Needs to be reintegrated.
+//                    .fullScreenCover(isPresented: $showRFRemote2, content: { FirebaseTemperatureDetailViewChart()
+//                            .background(BackgroundBlurView())
+//                            .offset(x: offsetControlPanelTab.width)
+//                            .opacity(2 - Double(abs(offsetControlPanelTab.width / 150)))
+//                            .gesture(
+//                                DragGesture()
+//                            .onChanged { gesture in
+//                                offsetControlPanelTab = gesture.translation
+//                                    }
+//                            .onEnded { value in
+//                                if value.location.x - value.startLocation.x > 150 {
+//                                    withAnimation(.spring()) { showRFRemote2.toggle() }
+//                                    offsetControlPanelTab = .zero
+//                                } else {
+//                                    offsetControlPanelTab = .zero
+//                                }
+//                            })
+//                    })
+//                    .transition(.opacity.combined(with: .move(edge: .bottom)).combined(with: .scale))
                     Spacer()
                     Button(action: { showSolenoidControl.toggle()
                          } ,
@@ -453,12 +409,13 @@ extension FirebaseHomeView {
                     ForEach (firebaseViewModel.pondParameters, id: \.self) { parameter in
                         ZStack {
                             Text("\(parameter.temperature, specifier: "%.1f")")
-//                            Text("\(parameter.temperature, specifier: "%.1f")\u{00B0}") // commented out one with degrees symbol
+                            // Text("\(parameter.temperature, specifier: "%.1f")\u{00B0}") // commented out one with degrees symbol
                                 .font(.headline).foregroundColor(Color.primary)
-                            RoundedRectangle(cornerRadius: 3).frame(width: parameterLoadingBoxWidth, height: parameterLoadingBoxHeight).foregroundColor(temperatureValueChanged ? Color.secondary.opacity(0.3) : Color.clear)
+                            RoundedRectangle(cornerRadius: 3)
+                                .frame(width: parameterLoadingBoxWidth, height: parameterLoadingBoxHeight)
+                                .foregroundColor(valueChangedFlags["temperature"] ?? false ? Color.secondary.opacity(0.3) : Color.clear)
                         }
                     }
-                    //.padding()
                 }
                 ZStack {
                     RoundedRectangle(cornerRadius: 3).frame(width: parameterLoadingBoxWidth, height: parameterLoadingBoxHeight).foregroundColor(Color.clear)
@@ -488,10 +445,11 @@ extension FirebaseHomeView {
                         ZStack {
                             Text("\(parameter.waterLevel, specifier: "%.1f")")
                                 .font(.headline).foregroundColor(Color.primary)
-                            RoundedRectangle(cornerRadius: 3).frame(width: parameterLoadingBoxWidth, height: parameterLoadingBoxHeight).foregroundColor(waterLevelValueChanged ? Color.secondary.opacity(0.3) : Color.clear)
+                            RoundedRectangle(cornerRadius: 3)
+                                .frame(width: parameterLoadingBoxWidth, height: parameterLoadingBoxHeight)
+                                .foregroundColor(valueChangedFlags["waterLevel"] ?? false ? Color.secondary.opacity(0.3) : Color.clear)
                         }
                     }
-//                    .padding()
                 }
                 ZStack {
                     RoundedRectangle(cornerRadius: 3).frame(width: parameterLoadingBoxWidth, height: parameterLoadingBoxHeight).foregroundColor(Color.clear)
@@ -528,10 +486,11 @@ extension FirebaseHomeView {
                         ZStack {
                             Text("\(parameter.turbidityValue)")
                                 .font(.headline).foregroundColor(Color.primary)
-                            RoundedRectangle(cornerRadius: 3).frame(width: parameterLoadingBoxWidth, height: parameterLoadingBoxHeight).foregroundColor(turbidityValueChanged ? Color.secondary.opacity(0.3) : Color.clear)
+                            RoundedRectangle(cornerRadius: 3)
+                                .frame(width: parameterLoadingBoxWidth, height: parameterLoadingBoxHeight)
+                                .foregroundColor(valueChangedFlags["turbidityValue"] ?? false ? Color.secondary.opacity(0.3) : Color.clear)
                         }
                     }
-                    //.padding()
                 }
                 ZStack {
                     RoundedRectangle(cornerRadius: 3).frame(width: parameterLoadingBoxWidth, height: parameterLoadingBoxHeight).foregroundColor(Color.clear)
@@ -561,10 +520,11 @@ extension FirebaseHomeView {
                         ZStack {
                             Text("\(parameter.totalDissolvedSolids)")
                                 .font(.headline).foregroundColor(Color.primary)
-                            RoundedRectangle(cornerRadius: 3).frame(width: parameterLoadingBoxWidth, height: parameterLoadingBoxHeight).foregroundColor(tdsValueChanged ? Color.secondary.opacity(0.3) : Color.clear)
+                            RoundedRectangle(cornerRadius: 3)
+                                .frame(width: parameterLoadingBoxWidth, height: parameterLoadingBoxHeight)
+                                .foregroundColor(valueChangedFlags["totalDissolvedSolids"] ?? false ? Color.secondary.opacity(0.3) : Color.clear)
                         }
                     }
-                    //.padding()
                 }
                 ZStack {
                     RoundedRectangle(cornerRadius: 3).frame(width: parameterLoadingBoxWidth, height: parameterLoadingBoxHeight).foregroundColor(Color.clear)
@@ -592,12 +552,13 @@ extension FirebaseHomeView {
                     }
                     ForEach (firebaseViewModel.pondParameters, id: \.self) { parameter in
                         ZStack {
-                            Text("\(parameter.pH, specifier: "%.1f")")
+                            Text("\(parameter.pH, specifier: "%.2f")")
                                 .font(.headline).foregroundColor(Color.primary)
-                            RoundedRectangle(cornerRadius: 3).frame(width: parameterLoadingBoxWidth, height: parameterLoadingBoxHeight).foregroundColor(pHValueChanged ? Color.secondary.opacity(0.3) : Color.clear)
+                            RoundedRectangle(cornerRadius: 3)
+                                .frame(width: parameterLoadingBoxWidth, height: parameterLoadingBoxHeight)
+                                .foregroundColor(valueChangedFlags["pH"] ?? false ? Color.secondary.opacity(0.3) : Color.clear)
                         }
                     }
-                    //.padding()
                 }
                 ZStack {
                     RoundedRectangle(cornerRadius: 3).frame(width: parameterLoadingBoxWidth, height: parameterLoadingBoxHeight).foregroundColor(Color.clear)
@@ -687,26 +648,24 @@ extension FirebaseHomeView {
     }
     
     private var navigationBarRecordIcon: some View {
-        Button(action: { withAnimation(.easeInOut(duration: 3.0)) {
-            spinningDisc.toggle()
-        }} ) {
+        Button(action: {} ) {
             Image("appicon.inapp")
                 .resizable()
                 .frame(width: 50.0, height: 50.0)
                 .scaledToFit()
-                .rotationEffect(recordRotationAngleValue, anchor: .center)
                 .shadow(color: Color.white.opacity(0.5), radius: colorScheme == .light ? 0 : 3, x: -1, y: 1)
                 .gesture(
                     TapGesture()
                         .onEnded { value in
-                            withAnimation(.easeInOut(duration: 3.0)) {
-//                                angle += Angle(degrees: 2880)
-                                recordRotationAngleValue = Angle(degrees: 2880)
-                            }
-                            recordRotationAngleValue = Angle(degrees: 0)
+                            self.showRTSPStreamPage.toggle()
                         }
                 )
-        } // Button
+        } // Button Content
+        .withPressableStyle()
+        // TODO: (03/10/2023) - This was commented out because it was causing a build error.
+        // Needs to be reintegrated.
+//        .fullScreenCover(isPresented: $showRTSPStreamPage, content: { RTSPStreamView() })
+        .transition(.opacity.combined(with: .move(edge: .bottom)).combined(with: .scale))
     }
 }
 

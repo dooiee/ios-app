@@ -46,4 +46,27 @@ class FirebaseArduinoStatistics: ObservableObject {
             print("ESP32 Statistics - Reset Count: \(values.count)")
         }) // databaseHandle
     }
+    
+    //    func getESPResetCount() -> Int {
+    //        let ref = Database.database().reference()
+    //        ref.child(childPathESPResetCount).observe(.value, with: { (snapshot) in
+    //            let espResetCount = snapshot.childrenCount
+    //            print("Total number of ESP resets: \(espResetCount)")
+    //        })
+    //        return self.espResetCount
+    //    }
+    //
+    //    func getMKRResetCount() -> Int {
+    //        let ref = Database.database().reference()
+    //        ref.child(childPathMKRResetCount).getData(completion:  { error, snapshot in
+    //          guard error == nil else {
+    //            print(error!.localizedDescription)
+    //            return;
+    //          }
+    //            let mkrResetCount = Int(snapshot.childrenCount)
+    //            print("Total number of MKR resets: \(mkrResetCount)")
+    //        })
+    //        return mkrResetCount
+    //    }
+    
 }

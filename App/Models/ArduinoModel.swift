@@ -12,7 +12,7 @@ struct ArduinoStatus: Codable, Hashable, Identifiable {
     let lastExternalReset, lastUpload: Int
     let onlineSince: OnlineSince
     let resetting, wifiRssi, wifiStatus: Int
-    let esp32Resetting: Int
+    let esp32Resetting: Int // adding esp32 reset option
 
     enum CodingKeys: String, CodingKey {
         case lastExternalReset = "Last External Reset"
@@ -35,4 +35,9 @@ struct OnlineSince: Codable, Hashable {
         case timeBeforeThat = "Time Before That"
         case totalRuntimeOfLastPowerCycle = "Total runtime of last power cycle (minutes)"
     }
+//    init(latest: String, timeBeforeThat: String, totalRuntimeOfLastPowerCycle: Int) {
+//        self.latest = latest
+//        self.timeBeforeThat = timeBeforeThat
+//        self.totalRuntimeOfLastPowerCycle = totalRuntimeOfLastPowerCycle
+//    }
 }

@@ -12,3 +12,9 @@
 
 # google service plist
 **/GoogleService-Info.plist
+
+# Constants.swift
+**/Constants.swift
+
+# UserInterfaceState.xcuserstate
+**/UserInterfaceState.xcuserstate

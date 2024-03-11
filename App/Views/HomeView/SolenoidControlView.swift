@@ -23,81 +23,16 @@ struct SolenoidControlView: View {
     var body: some View {
         VStack {
             headerSection
-            Spacer()
-            Toggle(isOn: $showSolenoidControl) {
-                Image("WaterFaucetSymbol")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 50, height: 50)
-                Text("Fill Pond")
-            }.alert(isPresented: $showSolenoidControl, content: {
-                Alert(title: Text("Confirm Fill"), message: Text("Are you sure you would like to fill the pond?"), primaryButton: .default(Text("Yes"), action: {
-                    showSolenoidControl = true
-                }), secondaryButton: .destructive(Text("No"), action: {
-                    showSolenoidControl = false
-                }))
-            })
-            .toggleStyle(SwitchToggleStyle(tint: Color.theme.background))
+            interactiveIsometricPondModelSection
+            pondFillToggleSection
             .onChange(of: showSolenoidControl) { newValue in
-                //print("Solenoid Valve Toggled to: \(newValue)")
                 firebaseSolenoidControl.uploadSolenoidPowerSignal(solenoidPowerState: showSolenoidControl ? "ON" : "OFF")
             }
             Text("The pond is currently filling...").font(.caption).foregroundColor(showSolenoidControl ? .secondary : Color.clear)
             Divider().padding()
-            ForEach (firebaseViewModelValues.pondParameters, id: \.self) { parameter in
-                VStack {
-                    HStack {
-                        let pondDepth: Double = 36 // 36 inches from bottom to sensor
-                        let pondDepthInches = parameter.waterLevel.rounded(.down).truncatingRemainder(dividingBy: 12)
-//                        let pondDepthFeet = (parameter.waterLevel.rounded(.down) - pondDepthInches) / 12
-                        let pondDepthFeet = (pondDepth - pondDepthInches) / 12
-                        Text("Current Pond Depth:")
-                        ZStack {
-                            Text("\(pondDepthFeet, specifier: "%.0f")").font(.title).bold()
-                            RoundedRectangle(cornerRadius: 3).foregroundColor(pondDepthFeetDidChange ? Color.secondary.opacity(0.3) : Color.clear)
-                        }.padding(.bottom, 5.0).frame(width: 20, height: 20)
-                        Text("ft ,")
-                        ZStack {
-                            Text("\(pondDepthInches, specifier: "%.0f")").font(.title).bold()
-                            RoundedRectangle(cornerRadius: 3).foregroundColor(pondDepthInchesDidChange ? Color.secondary.opacity(0.3) : Color.clear)
-                        }.padding(.bottom, 5.0).frame(width: 20, height: 20)
-                        Text("in.")
-                    }
-                    Text("(\(parameter.waterLevel, specifier: "%.1f") in)")
-                        .font(.footnote).foregroundColor(Color.secondary)
-                }
-            }.onChange(of: firebaseViewModelValues.pondParameters) { newValue in
-                let pondDepthInches = newValue[0].waterLevel.rounded(.down).truncatingRemainder(dividingBy: 12)
-                let pondDepthFeet = (newValue[0].waterLevel.rounded(.down) - Double(pondDepthInches)) / 12
-                if lastWaterLevelValueFeet == nil {
-                    lastWaterLevelValueFeet = pondDepthFeet
-                }
-                if lastWaterLevelValueFeet != pondDepthFeet {
-                    lastWaterLevelValueFeet = pondDepthFeet
-                    withAnimation(.easeOut(duration: 0.5)) {
-                        pondDepthFeetDidChange.toggle()
-                        lastWaterLevelValueFeet = pondDepthFeet
-                    }
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                        pondDepthFeetDidChange.toggle()
-                    }
-                }
-                if lastWaterLevelValueInches == nil {
-                    lastWaterLevelValueInches = pondDepthInches
-                }
-                if lastWaterLevelValueInches != pondDepthInches {
-                    lastWaterLevelValueInches = pondDepthInches
-                    withAnimation(.easeOut(duration: 0.5)) {
-                        pondDepthInchesDidChange.toggle()
-                        lastWaterLevelValueInches = pondDepthInches
-                    }
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                        pondDepthInchesDidChange.toggle()
-                    }
-                }
-            }
+            waterLevelDepthConversionSection
         Spacer()
-        }.padding()
+        }
         .onAppear {
             showSolenoidControl = firebaseSolenoidControl.getCurrentSolenoidPowerState()
         }
@@ -132,6 +67,89 @@ extension SolenoidControlView {
                     .padding()
             }
 
+        }
+    }
+    private var interactiveIsometricPondModelSection: some View {
+        //TODO: Add drag gestures that allow the image to be paned and rotated slightly and then have it return back to normal position when released.
+        // Also would like to possibly add animation of water being added when the solenoid valve is toggled on.
+        Image("midjourney-koi-pond-sketch")
+            .resizable()
+            .scaledToFit()
+            .rotation3DEffect(
+                .degrees(10),
+                axis: (x: 3.0, y: 1.0, z: 0.0)
+            )
+            .padding(.horizontal)
+    }
+    private var pondFillToggleSection: some View {
+        Toggle(isOn: $showSolenoidControl) {
+            Image("WaterFaucetSymbol")
+                .resizable()
+                .scaledToFit()
+                .frame(width: 50, height: 50)
+            Text("Fill Pond")
+        }.alert(isPresented: $showSolenoidControl, content: {
+            Alert(title: Text("Confirm Fill"), message: Text("Are you sure you would like to fill the pond?"), primaryButton: .default(Text("Yes"), action: {
+                showSolenoidControl = true
+            }), secondaryButton: .destructive(Text("No"), action: {
+                showSolenoidControl = false
+            }))
+        })
+        .toggleStyle(SwitchToggleStyle(tint: Color.theme.background))
+        .padding(.horizontal)
+    }
+    private var waterLevelDepthConversionSection: some View {
+        ForEach (firebaseViewModelValues.pondParameters, id: \.self) { parameter in
+            VStack {
+                HStack {
+                    let pondDepth: Double = 36 // 36 inches from bottom to sensor
+                    let pondDepthInches = parameter.waterLevel.rounded(.down).truncatingRemainder(dividingBy: 12)
+//                        let pondDepthFeet = (parameter.waterLevel.rounded(.down) - pondDepthInches) / 12
+                    let pondDepthFeet = (pondDepth - pondDepthInches) / 12
+                    Text("Current Pond Depth:")
+                    ZStack {
+                        Text("\(pondDepthFeet, specifier: "%.0f")").font(.title).bold()
+                        RoundedRectangle(cornerRadius: 3).foregroundColor(pondDepthFeetDidChange ? Color.secondary.opacity(0.3) : Color.clear)
+                    }.padding(.bottom, 5.0).frame(width: 20, height: 20)
+                    Text("ft ,")
+                    ZStack {
+                        Text("\(pondDepthInches, specifier: "%.0f")").font(.title).bold()
+                        RoundedRectangle(cornerRadius: 3).foregroundColor(pondDepthInchesDidChange ? Color.secondary.opacity(0.3) : Color.clear)
+                    }.padding(.bottom, 5.0).frame(width: 20, height: 20)
+                    Text("in.")
+                }
+                Text("(\(parameter.waterLevel, specifier: "%.1f") in)")
+                    .font(.footnote).foregroundColor(Color.secondary)
+            }
+        }.onChange(of: firebaseViewModelValues.pondParameters) { newValue in
+            let pondDepthInches = newValue[0].waterLevel.rounded(.down).truncatingRemainder(dividingBy: 12)
+            let pondDepthFeet = (newValue[0].waterLevel.rounded(.down) - Double(pondDepthInches)) / 12
+            if lastWaterLevelValueFeet == nil {
+                lastWaterLevelValueFeet = pondDepthFeet
+            }
+            if lastWaterLevelValueFeet != pondDepthFeet {
+                lastWaterLevelValueFeet = pondDepthFeet
+                withAnimation(.easeOut(duration: 0.5)) {
+                    pondDepthFeetDidChange.toggle()
+                    lastWaterLevelValueFeet = pondDepthFeet
+                }
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    pondDepthFeetDidChange.toggle()
+                }
+            }
+            if lastWaterLevelValueInches == nil {
+                lastWaterLevelValueInches = pondDepthInches
+            }
+            if lastWaterLevelValueInches != pondDepthInches {
+                lastWaterLevelValueInches = pondDepthInches
+                withAnimation(.easeOut(duration: 0.5)) {
+                    pondDepthInchesDidChange.toggle()
+                    lastWaterLevelValueInches = pondDepthInches
+                }
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    pondDepthInchesDidChange.toggle()
+                }
+            }
         }
     }
 }

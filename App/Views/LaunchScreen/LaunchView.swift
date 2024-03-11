@@ -8,13 +8,19 @@
 import SwiftUI
 
 struct LaunchView: View {
-    
+
+    @State private var rotationDegree = 0.0 // updates with degrees to be rotated
+    @State private var totalRotation = 7200.0 // how many degrees the record will spin
+    @State private var recordHeight: CGFloat = 105
+    @State private var recordWidth: CGFloat = 105
+
+    @State var recordSpinning: Bool = false
     @State var spinSlow: Bool = false
     @State var spinFast: Bool = false
     @State var fadeOut: Bool = false
     @State var animate: Bool = false
     @Binding var showLaunchView: Bool
-    
+
     var body: some View {
         ZStack {
             Color.launch.background
@@ -22,50 +28,44 @@ struct LaunchView: View {
             
             Circle()
                 .stroke(lineWidth: 2.0)
-//                .scale(animate ? 1.0 : 0) // shrink animate
-                .scale(animate ? 0.1 : 8.0) // grow animate
-                .opacity(animate ? 0.4 : 0.0)
-                .frame(width: 100, height: 100)
+                .scaleEffect(animate ? 10.0 : 0.1)
+                .opacity(animate ? 0.0 : 0.4)
+                .frame(width: recordWidth, height: recordHeight)
                 .foregroundColor(.black)
-            
+
             Image("LaunchScreenIcon")
                 .resizable()
-                .frame(width: 100, height: 100)
-                .rotationEffect(Angle(degrees: spinSlow ? 180 : 0), anchor: .center)
-                .rotationEffect(Angle(degrees: spinFast ? 3000 : 0), anchor: .center)
-//                .rotationEffect(Angle(degrees: spinFast ? 3400 : 0), anchor: .center) // original rotation angle
+                .frame(width: recordWidth, height: recordHeight)
+                .rotationEffect(.degrees(rotationDegree))
                 .opacity(fadeOut ? 0 : 1)
-                .scaleEffect(animate ? 1.0 : 0)
-            
-            
-        } //ZStack
+//                .scaleEffect(animate ? 0 : 1.0)
+        }
         .onAppear {
-            animate.toggle()
-//            DispatchQueue.main.async {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-                withAnimation(.easeInOut(duration: 1.0)) {
-                    spinSlow.toggle()
-                    
-                }
+            Task {
+                await recordSpinningAnimation()
+                await recordFadeOutAnimation()
+                await animateCircleAndHideLaunchScreenAnimation()
             }
-//            DispatchQueue.main.async {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                withAnimation(.easeIn(duration: 2.5)) {
-                    spinFast.toggle()
-                    fadeOut.toggle()
-                }
-            }
-//            DispatchQueue.main.async {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
-                withAnimation(animate ? Animation.easeOut(duration: 0.5) : .none) {
-                    animate.toggle()
-                    
-                    }
-            }
-//            DispatchQueue.main.async {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 2.9) {
-                showLaunchView = false
-            }
+        }
+    }
+
+    private func recordSpinningAnimation() async {
+        withAnimation(Animation.timingCurve(0.8, 0.0, 1.0, 0.9, duration: 2.2).speed(1.1).delay(0.2)) {
+            self.rotationDegree = self.totalRotation
+            self.recordSpinning = true
+        }
+    }
+
+    private func recordFadeOutAnimation() async {
+        withAnimation(.easeIn(duration: 1.8).delay(0.3)) {
+            fadeOut = true
+        }
+    }
+
+    private func animateCircleAndHideLaunchScreenAnimation() async {
+        withAnimation(Animation.easeOut(duration: 0.5).delay(1.9)) {
+            animate = true
+            showLaunchView.toggle()
         }
     }
 }
