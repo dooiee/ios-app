@@ -22,7 +22,7 @@
 		BE307E4E2B9E6ECA0019E72E /* SystemStatusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE307E4C2B9E6ECA0019E72E /* SystemStatusView.swift */; };
 		BE307E642B9E6F950019E72E /* Test2ColorPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE307E602B9E6F950019E72E /* Test2ColorPicker.swift */; };
 		BE307E672B9E6F950019E72E /* TESTArduinoColorPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE307E632B9E6F950019E72E /* TESTArduinoColorPicker.swift */; };
-		BE307E702B9E89AB0019E72E /* SwiftUICharts in Frameworks */ = {isa = PBXBuildFile; productRef = BE307E6F2B9E89AB0019E72E /* SwiftUICharts */; };
+		BE307E752BABABCE0019E72E /* SwiftUICharts in Frameworks */ = {isa = PBXBuildFile; productRef = BE307E742BABABCE0019E72E /* SwiftUICharts */; };
 		BE3F57C528187DBE00753C3E /* FirebaseDataRetreivalForInterval.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE3F57C428187DBE00753C3E /* FirebaseDataRetreivalForInterval.swift */; };
 		BE4D674828C6D1D70049DF40 /* HapticManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE4D674728C6D1D70049DF40 /* HapticManager.swift */; };
 		BE52EBBF2877930300EED465 /* WeatherKitViewTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE52EBBE2877930300EED465 /* WeatherKitViewTest.swift */; };
@@ -76,8 +76,6 @@
 		BE307E4C2B9E6ECA0019E72E /* SystemStatusView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SystemStatusView.swift; sourceTree = "<group>"; };
 		BE307E602B9E6F950019E72E /* Test2ColorPicker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Test2ColorPicker.swift; sourceTree = "<group>"; };
 		BE307E632B9E6F950019E72E /* TESTArduinoColorPicker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TESTArduinoColorPicker.swift; sourceTree = "<group>"; };
-		BE307E6D2B9E89400019E72E /* ChartView */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = ChartView; path = App/ChartView; sourceTree = "<group>"; };
-		BE307E712B9E8A860019E72E /* ChartView */ = {isa = PBXFileReference; lastKnownFileType = wrapper; name = ChartView; path = App/Packages/ChartView; sourceTree = "<group>"; };
 		BE3F57C428187DBE00753C3E /* FirebaseDataRetreivalForInterval.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseDataRetreivalForInterval.swift; sourceTree = "<group>"; };
 		BE4D674728C6D1D70049DF40 /* HapticManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HapticManager.swift; sourceTree = "<group>"; };
 		BE52EBB52877612600EED465 /* Project-Shangri-La (iOS).entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Project-Shangri-La (iOS).entitlements"; sourceTree = "<group>"; };
@@ -88,8 +86,6 @@
 		BE5BA12727C723DD0023792D /* Project-Shangri-La--iOS--Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "Project-Shangri-La--iOS--Info.plist"; sourceTree = "<group>"; };
 		BE6687F627F8E32C00C34D7D /* FirebaseRFTransmitter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseRFTransmitter.swift; sourceTree = "<group>"; };
 		BE6DB5CC27F7B16300044F5D /* RFRemoteView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RFRemoteView.swift; sourceTree = "<group>"; };
-		BE92AB6C28BE703700CC8BED /* Charts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Charts.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS16.0.sdk/System/Library/Frameworks/Charts.framework; sourceTree = DEVELOPER_DIR; };
-		BE92AB6F28BE706400CC8BED /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS16.0.sdk/System/Library/Frameworks/SwiftUI.framework; sourceTree = DEVELOPER_DIR; };
 		BE9450682832F1E70000ED7A /* FirebaseSolenoidControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseSolenoidControl.swift; sourceTree = "<group>"; };
 		BE94506B28358B250000ED7A /* GenericDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GenericDetailView.swift; sourceTree = "<group>"; };
 		BE98FBB627D94526008D3ABD /* FirebaseModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirebaseModel.swift; sourceTree = "<group>"; };
@@ -119,10 +115,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				BE307E172B9E2EDE0019E72E /* FirebaseDatabaseSwift-Beta in Frameworks */,
+				BE307E752BABABCE0019E72E /* SwiftUICharts in Frameworks */,
 				BE307E1F2B9E2FDA0019E72E /* Collections in Frameworks */,
 				BE307E152B9E2ED90019E72E /* FirebaseDatabase in Frameworks */,
 				BE307E132B9E2ED40019E72E /* FirebaseAuth in Frameworks */,
-				BE307E702B9E89AB0019E72E /* SwiftUICharts in Frameworks */,
 				BE307E232B9E2FDA0019E72E /* OrderedCollections in Frameworks */,
 				BE307E212B9E2FDA0019E72E /* DequeModule in Frameworks */,
 			);
@@ -274,11 +270,7 @@
 		BEC6E66C27B978FD003AD041 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				BE307E6D2B9E89400019E72E /* ChartView */,
-				BE307E712B9E8A860019E72E /* ChartView */,
-				BE92AB6F28BE706400CC8BED /* SwiftUI.framework */,
 				BE307E182B9E2F200019E72E /* SwiftUI.framework */,
-				BE92AB6C28BE703700CC8BED /* Charts.framework */,
 				BEC6E66D27B978FD003AD041 /* WidgetKit.framework */,
 			);
 			name = Frameworks;
@@ -319,7 +311,7 @@
 				BE307E1E2B9E2FDA0019E72E /* Collections */,
 				BE307E202B9E2FDA0019E72E /* DequeModule */,
 				BE307E222B9E2FDA0019E72E /* OrderedCollections */,
-				BE307E6F2B9E89AB0019E72E /* SwiftUICharts */,
+				BE307E742BABABCE0019E72E /* SwiftUICharts */,
 			);
 			productName = "Project-Shangri-La (iOS)";
 			productReference = BEC6E64027B852E7003AD041 /* Project-Shangri-La.app */;
@@ -352,6 +344,7 @@
 			packageReferences = (
 				BE307E112B9E23260019E72E /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 				BE307E1D2B9E2FDA0019E72E /* XCRemoteSwiftPackageReference "swift-collections" */,
+				BE307E732BABABCE0019E72E /* XCRemoteSwiftPackageReference "ChartView" */,
 			);
 			productRefGroup = BEC6E64127B852E7003AD041 /* Products */;
 			projectDirPath = "";
@@ -652,6 +645,14 @@
 				minimumVersion = 1.1.0;
 			};
 		};
+		BE307E732BABABCE0019E72E /* XCRemoteSwiftPackageReference "ChartView" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/dooiee/ChartView";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -685,8 +686,9 @@
 			package = BE307E1D2B9E2FDA0019E72E /* XCRemoteSwiftPackageReference "swift-collections" */;
 			productName = OrderedCollections;
 		};
-		BE307E6F2B9E89AB0019E72E /* SwiftUICharts */ = {
+		BE307E742BABABCE0019E72E /* SwiftUICharts */ = {
 			isa = XCSwiftPackageProductDependency;
+			package = BE307E732BABABCE0019E72E /* XCRemoteSwiftPackageReference "ChartView" */;
 			productName = SwiftUICharts;
 		};
 /* End XCSwiftPackageProductDependency section */

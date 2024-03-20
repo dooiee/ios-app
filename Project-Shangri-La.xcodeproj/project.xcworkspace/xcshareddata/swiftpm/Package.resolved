@@ -1,5 +1,5 @@
 {
-  "originHash" : "89f554c2ba66610adb0e158ca04505245ec89f2ef54e289cf4578a0cd8b2accc",
+  "originHash" : "ced52ee840351a67f9588b9446d0d96061b775e114cb1583900880d25cdab475",
   "pins" : [
     {
       "identity" : "abseil-cpp-swiftpm",
@@ -17,6 +17,15 @@
       "state" : {
         "revision" : "734a8247442fde37df4364c21f6a0085b6a36728",
         "version" : "0.7.2"
+      }
+    },
+    {
+      "identity" : "chartview",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/dooiee/ChartView",
+      "state" : {
+        "branch" : "master",
+        "revision" : "df693ab078fb71b79bc7099ce4e048f823b08659"
       }
     },
     {
