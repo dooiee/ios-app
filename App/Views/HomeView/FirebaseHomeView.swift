@@ -662,9 +662,7 @@ extension FirebaseHomeView {
                 )
         } // Button Content
         .withPressableStyle()
-        // TODO: (03/10/2023) - This was commented out because it was causing a build error.
-        // Needs to be reintegrated.
-//        .fullScreenCover(isPresented: $showRTSPStreamPage, content: { RTSPStreamView() })
+        .fullScreenCover(isPresented: $showRTSPStreamPage, content: { RTSPStreamView() })
         .transition(.opacity.combined(with: .move(edge: .bottom)).combined(with: .scale))
     }
 }

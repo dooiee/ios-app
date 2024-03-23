@@ -77,7 +77,7 @@ struct VLCSwiftUIView: UIViewRepresentable {
             }
         }
 
-        func mediaPlayerStateChanged(_ aNotification: Notification!) {
+        func mediaPlayerStateChanged(_ aNotification: Notification) {
             DispatchQueue.main.async { [weak self] in
                 guard let self = self else { return }
                 switch self.mediaPlayer.state {
