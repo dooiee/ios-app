@@ -54,7 +54,6 @@
 		BE6AF2672BAF7A08009EBEC1 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE6AF2662BAF7A08009EBEC1 /* Constants.swift */; };
 		BE6AF2692BAF7ABA009EBEC1 /* Project_Shangri_LaApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE6AF2682BAF7ABA009EBEC1 /* Project_Shangri_LaApp.swift */; };
 		BE6AF26B2BAF7BE5009EBEC1 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = BE6AF26A2BAF7BE5009EBEC1 /* GoogleService-Info.plist */; };
-		BEE79C5E2BAF831D006AFC41 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BEE79C5B2BAF831D006AFC41 /* Preview Assets.xcassets */; };
 		CDEDB58329F5EE935AB0FDF3 /* Pods_Project_Shangri_La.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5EFB6587E1E790A401430FD1 /* Pods_Project_Shangri_La.framework */; };
 /* End PBXBuildFile section */
 
@@ -101,7 +100,6 @@
 		BE6AF2662BAF7A08009EBEC1 /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		BE6AF2682BAF7ABA009EBEC1 /* Project_Shangri_LaApp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Project_Shangri_LaApp.swift; sourceTree = "<group>"; };
 		BE6AF26A2BAF7BE5009EBEC1 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
-		BEE79C5B2BAF831D006AFC41 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -281,17 +279,8 @@
 				BE6AF2292BAF762A009EBEC1 /* Views */,
 				BE6AF22A2BAF762A009EBEC1 /* Assets.xcassets */,
 				BE6AF2682BAF7ABA009EBEC1 /* Project_Shangri_LaApp.swift */,
-				BEE79C5C2BAF831D006AFC41 /* Preview Content */,
 			);
 			path = App;
-			sourceTree = "<group>";
-		};
-		BEE79C5C2BAF831D006AFC41 /* Preview Content */ = {
-			isa = PBXGroup;
-			children = (
-				BEE79C5B2BAF831D006AFC41 /* Preview Assets.xcassets */,
-			);
-			path = "Preview Content";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -372,7 +361,6 @@
 			files = (
 				BE6AF24D2BAF762A009EBEC1 /* LaunchScreen.storyboard in Resources */,
 				BE6AF26B2BAF7BE5009EBEC1 /* GoogleService-Info.plist in Resources */,
-				BEE79C5E2BAF831D006AFC41 /* Preview Assets.xcassets in Resources */,
 				BE6AF24F2BAF762A009EBEC1 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -592,7 +580,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"App/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "";
 				DEVELOPMENT_TEAM = MMFJ246YZU;
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
@@ -627,7 +615,7 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_ASSET_PATHS = "\"App/Preview Content\"";
+				DEVELOPMENT_ASSET_PATHS = "";
 				DEVELOPMENT_TEAM = MMFJ246YZU;
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
