@@ -96,341 +96,337 @@ struct CustomCommandPanelSection: View {
     }
 }
 
+struct FirebaseTemperatureDetailViewChart: View {
+    
+    @Environment(\.colorScheme) var colorScheme
+    @Environment(\.presentationMode) var presentationMode
+    @EnvironmentObject private var vm: FirebaseDataService
+    @StateObject private var fvm = FirebaseDataService()
+    // ...
+    @StateObject private var arduinoControl: ArduinoControlViaFirebase<LEDColorData>
+    // ...
+    
+    @State var command = false
+    @State var commandSent = false
+    @State var test1CommandSent = false
+    @State var colorCommandSent = false
+    @State var commandSentResponse: String? // Define commandSentResponse here
+    
+    @State private var selectedColor: Color = Color.white
+    @State private var isColorChanged = false
+    
+    init() {
+        // 2. Initialize ControlPanelConfig and ArduinoControlViaFirebase with appropriate values
+        let config = ControlPanelConfig(
+            parentPath: "SystemStatus/Board/MKR_1010/OnBoardLED/Color",
+            onBoardLEDColorRGBRedPath: "RGB/red",
+            onBoardLEDColorRGBGreenPath: "RGB/green",
+            onBoardLEDColorRGBBluePath: "RGB/blue",
+            onBoardLEDColorBrightnessPath: "brightness",
+            onBoardLEDColorLastUpdatedPath: "lastUpdated"
+        )
+        _arduinoControl = StateObject(wrappedValue: ArduinoControlViaFirebase<LEDColorData>(config: config))
+    }
+    
+    var body: some View {
+        NavigationView {
+            ZStack {
+                colorScheme == .light ? Color.white.ignoresSafeArea() : Color.black.ignoresSafeArea()
+                List {
+                    onBoardLED
+                    firebaseSection
+                    mqttSection
+                    networkingSection
+                    wifiSection
+                    awsSection
+                }
+                .listStyle(.sidebar)
+                .background(colorScheme == .light ? Color(red: 0.949, green: 0.949, blue: 0.97) : Color.black)
+            }
+            .onChange(of: commandSent, perform: { newValue in
+                if newValue {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+                        commandSent = false
+                    }
+                }
+            })
+            // On-Board LED Command Section //
+            .onChange(of: colorCommandSent) { newValue in
+                if newValue {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+                        colorCommandSent = false
+                    }
+                }
+            }
+            .onChange(of: test1CommandSent) { newValue in
+                if newValue {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+                        test1CommandSent = false
+                    }
+                }
+            }
+            .navigationBarTitleDisplayMode(.large)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button(action: {
+                        presentationMode.wrappedValue.dismiss()
+                    }) {
+                        Image(systemName: "chevron.left")
+                            .foregroundColor(colorScheme == .light ? Color.black : Color.secondary)
+                    }
+                }
+                
+                ToolbarItem(placement: .principal) {
+                    Text("Command Panel")
+                        .font(.title2)
+                        .bold()
+                }
+                
+                ToolbarItem(placement: .navigationBarTrailing) {
+                    Button(action: {
+                        // Add action here
+                    }) {
+                        Image(systemName: "chevron.left")
+                            .foregroundColor(Color.clear)
+                    }
+                }
+            }
+        }
+    }
+}
 
-// TODO: (03/10/2023) - This was commented out because it was causing a build error.
-// This is referenced in FirebaseHomeView.swift and commented out there as well.
+extension FirebaseTemperatureDetailViewChart {
+    private var headerSection: some View {
+        HStack {
+            Button {
+                presentationMode.wrappedValue.dismiss()
+            } label: {
+                Image(systemName: "chevron.left")
+                    .foregroundColor(colorScheme == .light ? Color.black : Color.secondary)
+                    .font(.title)
+                    .padding()
+            }
+            Spacer()
+            Text("Command Panel").font(.title2).bold()
+            Spacer()
+            Button {
+            } label: {
+                Image(systemName: "chevron.left")
+                    .foregroundColor(Color.clear)
+                    .font(.title)
+                    .padding()
+            }
+        }
+    }
+    private var commandListRow: some View {
+        //        ForEach (firebaseArduinoControl.arduinoStatus, id: \.self) { parameter in
+        Section(header: Text("Command"), footer:
+                    HStack {
+            Text(commandSent ? "Command Sent!" : "")
+        })
+        {
+            Toggle(isOn: $command) {
+                HStack {
+                    Image(systemName: "icloud.and.arrow.up.fill").symbolRenderingMode(.palette).foregroundStyle(Color.red, Color("AccentColorPeach"))
+                        .imageScale(.large).padding(.trailing, 5.0)
+                    Text("Command:")
+                    Spacer()
+                }
+            }
+            .toggleStyle( SwitchToggleStyle(tint: Color.theme.background))
+            .alert(isPresented: $command, content: {
+                Alert(title: Text("Send Command {Command_Name}"), message: Text("Are you sure you would like to perform this command?"), primaryButton: .default(Text("Yes"), action: {
+                    commandSent = true
+                }), secondaryButton: .destructive(Text("No"), action: {
+                    commandSent = false
+                }))
+            })
+        }
+//    } // ForEach
+    }
+    
+    private var firebaseSection: some View {
+        Section(header: Text("Firebase"), footer:
+                    HStack {
+            Text(test1CommandSent ? "Command Sent!" : "")
+        })
+        {
+            CustomCommandPanelSection(
+                text: "Testing",
+                imageName: "iphone.radiowaves.left.and.right.circle",
+                symbolRenderingMode: .palette,
+                primaryColor: Color.blue,
+                secondaryColor: Color.red,
+                commandSent: $test1CommandSent
+            )
+            CustomCommandPanelSection(
+                text: "Testing",
+                imageName: "iphone.radiowaves.left.and.right.circle",
+                symbolRenderingMode: .palette,
+                primaryColor: Color.blue,
+                secondaryColor: Color.red,
+                commandSent: $test1CommandSent
+            )
+        }
+    }
+    
+    private var mqttSection: some View {
+        Section(header: Text("MQTT"), footer:
+                    HStack {
+            Text(test1CommandSent ? "Command Sent!" : "")
+        })
+        {
+            CustomCommandPanelSection(
+                text: "Testing",
+                imageName: "iphone.radiowaves.left.and.right.circle",
+                symbolRenderingMode: .palette,
+                primaryColor: Color.blue,
+                secondaryColor: Color.red,
+                commandSent: $test1CommandSent
+            )
+            CustomCommandPanelSection(
+                text: "Testing",
+                imageName: "iphone.radiowaves.left.and.right.circle",
+                symbolRenderingMode: .palette,
+                primaryColor: Color.blue,
+                secondaryColor: Color.red,
+                commandSent: $test1CommandSent
+            )
+        }
+    }
+    
+    private var wifiSection: some View {
+        Section(header: Text("Wi-Fi"), footer:
+                    HStack {
+            Text(test1CommandSent ? "Command Sent!" : "")
+        })
+        {
+            CustomCommandPanelSection(
+                text: "Testing",
+                imageName: "iphone.radiowaves.left.and.right.circle",
+                symbolRenderingMode: .palette,
+                primaryColor: Color.blue,
+                secondaryColor: Color.red,
+                commandSent: $test1CommandSent
+            )
+            CustomCommandPanelSection(
+                text: "Testing",
+                imageName: "iphone.radiowaves.left.and.right.circle",
+                symbolRenderingMode: .palette,
+                primaryColor: Color.blue,
+                secondaryColor: Color.red,
+                commandSent: $test1CommandSent
+            )
+        }
+    }
+    
+    private var networkingSection: some View {
+        Section(header: Text("TCP/IP"), footer:
+                    HStack {
+            Text(test1CommandSent ? "Command Sent!" : "")
+        })
+        {
+            CustomCommandPanelSection(
+                text: "Testing",
+                imageName: "iphone.radiowaves.left.and.right.circle",
+                symbolRenderingMode: .palette,
+                primaryColor: Color.blue,
+                secondaryColor: Color.red,
+                commandSent: $test1CommandSent
+            )
+            CustomCommandPanelSection(
+                text: "Testing",
+                imageName: "iphone.radiowaves.left.and.right.circle",
+                symbolRenderingMode: .palette,
+                primaryColor: Color.blue,
+                secondaryColor: Color.red,
+                commandSent: $test1CommandSent
+            )
+        }
+    }
+    private var awsSection: some View {
+        Section(header: Text("AWS"), footer:
+                    HStack {
+            Text(test1CommandSent ? "Command Sent!" : "")
+        })
+        {
+            CustomCommandPanelSection(
+                text: "Testing",
+                imageName: "iphone.radiowaves.left.and.right.circle",
+                symbolRenderingMode: .palette,
+                primaryColor: Color.blue,
+                secondaryColor: Color.red,
+                commandSent: $test1CommandSent
+            )
+            CustomCommandPanelSection(
+                text: "Testing",
+                imageName: "iphone.radiowaves.left.and.right.circle",
+                symbolRenderingMode: .palette,
+                primaryColor: Color.blue,
+                secondaryColor: Color.red,
+                commandSent: $test1CommandSent
+            )
+        }
+    }
+    
+    private var onBoardLED: some View {
+        Section(header: Text("MKR On-Board RGB"), footer:
+            HStack {
+            Text(colorCommandSent ? commandSentResponse ?? "" : "")
+            })
+        {
+            VStack {
+                ColorPicker(selection: $selectedColor, supportsOpacity: true) {
+                    HStack(alignment: .center, spacing: 5) {
+                        Text("Color Picker")
+                            .foregroundColor(.primary)
+                            .cornerRadius(8)
+                        Spacer()
+                        VStack {
+                            HStack {
+                                Text("R:\(Int(selectedColor.rgbaComponents.red * 255))")
+                                    .foregroundColor(.secondary)
+                                .font(.caption).bold()
+                                Text("G:\(Int(selectedColor.rgbaComponents.green * 255))")
+                                    .foregroundColor(.secondary)
+                                    .font(.caption).bold()
+                                Text("B:\(Int(selectedColor.rgbaComponents.blue * 255))")
+                                    .foregroundColor(.secondary)
+                                    .font(.caption).bold()
+                            }
+                            Text("Brightness: \(Int(selectedColor.rgbaComponents.alpha * 100))%")
+                                .foregroundColor(.secondary)
+                                .font(.caption).bold()
+                        }
+                    }
+                }
+            }
+            CustomCommandPanelSection(
+                text: "Send Color to MKR 1010?",
+                imageName: "light.beacon.max",
+                symbolRenderingMode: .palette,
+                primaryColor: Color.blue,
+                secondaryColor: Color.blue,
+                alertMessage: "Would you like to set the on-board MKR-1010 LED to the Color Picker color?",
+                alertAction: {
+                    arduinoControl.setOnBoardLEDColor(color: selectedColor) { success in
+                        DispatchQueue.main.async {
+                            commandSentResponse = success ? "Upload Successful!" : "Upload Error"
+                        }
+                    }
+                },
+                commandSent: $colorCommandSent
+            )
+        }
+    }
 
-//struct FirebaseTemperatureDetailViewChart: View {
-//    
-//    @Environment(\.colorScheme) var colorScheme
-//    @Environment(\.presentationMode) var presentationMode
-//    @EnvironmentObject private var vm: FirebaseDataService
-//    @StateObject private var fvm = FirebaseDataService()
-//    // ...
-//    @StateObject private var arduinoControl: ArduinoControlViaFirebase<LEDColorData>
-//    // ...
-//    
-//    @State var command = false
-//    @State var commandSent = false
-//    @State var test1CommandSent = false
-//    @State var colorCommandSent = false
-//    @State var commandSentResponse: String? // Define commandSentResponse here
-//    
-//    @State private var selectedColor: Color = Color.white
-//    @State private var isColorChanged = false
-//    
-//    init() {
-//        // 2. Initialize ControlPanelConfig and ArduinoControlViaFirebase with appropriate values
-//        let config = ControlPanelConfig(
-//            parentPath: "SystemStatus/Board/MKR_1010/OnBoardLED/Color",
-//            onBoardLEDColorRGBRedPath: "RGB/red",
-//            onBoardLEDColorRGBGreenPath: "RGB/green",
-//            onBoardLEDColorRGBBluePath: "RGB/blue",
-//            onBoardLEDColorBrightnessPath: "brightness",
-//            onBoardLEDColorLastUpdatedPath: "lastUpdated"
-//        )
-//        _arduinoControl = StateObject(wrappedValue: ArduinoControlViaFirebase<LEDColorData>(config: config))
-//    }
-//    
-//    var body: some View {
-//        NavigationView {
-//            ZStack {
-//                colorScheme == .light ? Color.white.ignoresSafeArea() : Color.black.ignoresSafeArea()
-//                List {
-//                    onBoardLED
-//                    firebaseSection
-//                    mqttSection
-//                    networkingSection
-//                    wifiSection
-//                    awsSection
-//                }
-//                .listStyle(.sidebar)
-//                .background(colorScheme == .light ? Color(red: 0.949, green: 0.949, blue: 0.97) : Color.black)
-//            }
-//            .onChange(of: commandSent, perform: { newValue in
-//                if newValue {
-//                    DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-//                        commandSent = false
-//                    }
-//                }
-//            })
-//            // On-Board LED Command Section //
-//            .onChange(of: colorCommandSent) { newValue in
-//                if newValue {
-//                    DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-//                        colorCommandSent = false
-//                    }
-//                }
-//            }
-//            .onChange(of: test1CommandSent) { newValue in
-//                if newValue {
-//                    DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-//                        test1CommandSent = false
-//                    }
-//                }
-//            }
-//            .navigationBarTitleDisplayMode(.large)
-//            .toolbar {
-//                ToolbarItem(placement: .navigationBarLeading) {
-//                    Button(action: {
-//                        presentationMode.wrappedValue.dismiss()
-//                    }) {
-//                        Image(systemName: "chevron.left")
-//                            .foregroundColor(colorScheme == .light ? Color.black : Color.secondary)
-//                    }
-//                }
-//                
-//                ToolbarItem(placement: .principal) {
-//                    Text("Command Panel")
-//                        .font(.title2)
-//                        .bold()
-//                }
-//                
-//                ToolbarItem(placement: .navigationBarTrailing) {
-//                    Button(action: {
-//                        // Add action here
-//                    }) {
-//                        Image(systemName: "chevron.left")
-//                            .foregroundColor(Color.clear)
-//                    }
-//                }
-//            }
-//        }
-//    }
-//}
-//
-//extension FirebaseTemperatureDetailViewChart {
-//    private var headerSection: some View {
-//        HStack {
-//            Button {
-//                presentationMode.wrappedValue.dismiss()
-//            } label: {
-//                Image(systemName: "chevron.left")
-//                    .foregroundColor(colorScheme == .light ? Color.black : Color.secondary)
-//                    .font(.title)
-//                    .padding()
-//            }
-//            Spacer()
-//            Text("Command Panel").font(.title2).bold()
-//            Spacer()
-//            Button {
-//            } label: {
-//                Image(systemName: "chevron.left")
-//                    .foregroundColor(Color.clear)
-//                    .font(.title)
-//                    .padding()
-//            }
-//        }
-//    }
-//    private var commandListRow: some View {
-//        //        ForEach (firebaseArduinoControl.arduinoStatus, id: \.self) { parameter in
-//        Section(header: Text("Command"), footer:
-//                    HStack {
-//            Text(commandSent ? "Command Sent!" : "")
-//        })
-//        {
-//            Toggle(isOn: $command) {
-//                HStack {
-//                    Image(systemName: "icloud.and.arrow.up.fill").symbolRenderingMode(.palette).foregroundStyle(Color.red, Color("AccentColorPeach"))
-//                        .imageScale(.large).padding(.trailing, 5.0)
-//                    Text("Command:")
-//                    Spacer()
-//                }
-//            }
-//            .toggleStyle( SwitchToggleStyle(tint: Color.theme.background))
-//            .alert(isPresented: $command, content: {
-//                Alert(title: Text("Send Command {Command_Name}"), message: Text("Are you sure you would like to perform this command?"), primaryButton: .default(Text("Yes"), action: {
-//                    commandSent = true
-//                }), secondaryButton: .destructive(Text("No"), action: {
-//                    commandSent = false
-//                }))
-//            })
-//        }
-////    } // ForEach
-//    }
-//    
-//    private var firebaseSection: some View {
-//        Section(header: Text("Firebase"), footer:
-//                    HStack {
-//            Text(test1CommandSent ? "Command Sent!" : "")
-//        })
-//        {
-//            CustomCommandPanelSection(
-//                text: "Testing",
-//                imageName: "iphone.radiowaves.left.and.right.circle",
-//                symbolRenderingMode: .palette,
-//                primaryColor: Color.blue,
-//                secondaryColor: Color.red,
-//                commandSent: $test1CommandSent
-//            )
-//            CustomCommandPanelSection(
-//                text: "Testing",
-//                imageName: "iphone.radiowaves.left.and.right.circle",
-//                symbolRenderingMode: .palette,
-//                primaryColor: Color.blue,
-//                secondaryColor: Color.red,
-//                commandSent: $test1CommandSent
-//            )
-//        }
-//    }
-//    
-//    private var mqttSection: some View {
-//        Section(header: Text("MQTT"), footer:
-//                    HStack {
-//            Text(test1CommandSent ? "Command Sent!" : "")
-//        })
-//        {
-//            CustomCommandPanelSection(
-//                text: "Testing",
-//                imageName: "iphone.radiowaves.left.and.right.circle",
-//                symbolRenderingMode: .palette,
-//                primaryColor: Color.blue,
-//                secondaryColor: Color.red,
-//                commandSent: $test1CommandSent
-//            )
-//            CustomCommandPanelSection(
-//                text: "Testing",
-//                imageName: "iphone.radiowaves.left.and.right.circle",
-//                symbolRenderingMode: .palette,
-//                primaryColor: Color.blue,
-//                secondaryColor: Color.red,
-//                commandSent: $test1CommandSent
-//            )
-//        }
-//    }
-//    
-//    private var wifiSection: some View {
-//        Section(header: Text("Wi-Fi"), footer:
-//                    HStack {
-//            Text(test1CommandSent ? "Command Sent!" : "")
-//        })
-//        {
-//            CustomCommandPanelSection(
-//                text: "Testing",
-//                imageName: "iphone.radiowaves.left.and.right.circle",
-//                symbolRenderingMode: .palette,
-//                primaryColor: Color.blue,
-//                secondaryColor: Color.red,
-//                commandSent: $test1CommandSent
-//            )
-//            CustomCommandPanelSection(
-//                text: "Testing",
-//                imageName: "iphone.radiowaves.left.and.right.circle",
-//                symbolRenderingMode: .palette,
-//                primaryColor: Color.blue,
-//                secondaryColor: Color.red,
-//                commandSent: $test1CommandSent
-//            )
-//        }
-//    }
-//    
-//    private var networkingSection: some View {
-//        Section(header: Text("TCP/IP"), footer:
-//                    HStack {
-//            Text(test1CommandSent ? "Command Sent!" : "")
-//        })
-//        {
-//            CustomCommandPanelSection(
-//                text: "Testing",
-//                imageName: "iphone.radiowaves.left.and.right.circle",
-//                symbolRenderingMode: .palette,
-//                primaryColor: Color.blue,
-//                secondaryColor: Color.red,
-//                commandSent: $test1CommandSent
-//            )
-//            CustomCommandPanelSection(
-//                text: "Testing",
-//                imageName: "iphone.radiowaves.left.and.right.circle",
-//                symbolRenderingMode: .palette,
-//                primaryColor: Color.blue,
-//                secondaryColor: Color.red,
-//                commandSent: $test1CommandSent
-//            )
-//        }
-//    }
-//    private var awsSection: some View {
-//        Section(header: Text("AWS"), footer:
-//                    HStack {
-//            Text(test1CommandSent ? "Command Sent!" : "")
-//        })
-//        {
-//            CustomCommandPanelSection(
-//                text: "Testing",
-//                imageName: "iphone.radiowaves.left.and.right.circle",
-//                symbolRenderingMode: .palette,
-//                primaryColor: Color.blue,
-//                secondaryColor: Color.red,
-//                commandSent: $test1CommandSent
-//            )
-//            CustomCommandPanelSection(
-//                text: "Testing",
-//                imageName: "iphone.radiowaves.left.and.right.circle",
-//                symbolRenderingMode: .palette,
-//                primaryColor: Color.blue,
-//                secondaryColor: Color.red,
-//                commandSent: $test1CommandSent
-//            )
-//        }
-//    }
-//    
-//    private var onBoardLED: some View {
-//        Section(header: Text("MKR On-Board RGB"), footer:
-//            HStack {
-//            Text(colorCommandSent ? commandSentResponse ?? "" : "")
-//            })
-//        {
-//            VStack {
-//                ColorPicker(selection: $selectedColor, supportsOpacity: true) {
-//                    HStack(alignment: .center, spacing: 5) {
-//                        Text("Color Picker")
-//                            .foregroundColor(.primary)
-//                            .cornerRadius(8)
-//                        Spacer()
-//                        VStack {
-//                            HStack {
-//                                Text("R:\(Int(selectedColor.rgbaComponents.red * 255))")
-//                                    .foregroundColor(.secondary)
-//                                .font(.caption).bold()
-//                                Text("G:\(Int(selectedColor.rgbaComponents.green * 255))")
-//                                    .foregroundColor(.secondary)
-//                                    .font(.caption).bold()
-//                                Text("B:\(Int(selectedColor.rgbaComponents.blue * 255))")
-//                                    .foregroundColor(.secondary)
-//                                    .font(.caption).bold()
-//                            }
-//                            Text("Brightness: \(Int(selectedColor.rgbaComponents.alpha * 100))%")
-//                                .foregroundColor(.secondary)
-//                                .font(.caption).bold()
-//                        }
-//                    }
-//                }
-//            }
-//            CustomCommandPanelSection(
-//                text: "Send Color to MKR 1010?",
-//                imageName: "light.beacon.max",
-//                symbolRenderingMode: .palette,
-//                primaryColor: Color.blue,
-//                secondaryColor: Color.blue,
-//                alertMessage: "Would you like to set the on-board MKR-1010 LED to the Color Picker color?",
-//                alertAction: {
-//                    arduinoControl.setOnBoardLEDColor(color: selectedColor) { success in
-//                        DispatchQueue.main.async {
-//                            commandSentResponse = success ? "Upload Successful!" : "Upload Error"
-//                        }
-//                    }
-//                },
-//                commandSent: $colorCommandSent
-//            )
-//        }
-//    }
-//
-//}
-//
-//struct FirebaseTemperatureDetailViewChart_Previews: PreviewProvider {
-//    static var previews: some View {
-//        FirebaseTemperatureDetailViewChart()
-//    }
-//}
+}
+
+struct FirebaseTemperatureDetailViewChart_Previews: PreviewProvider {
+    static var previews: some View {
+        FirebaseTemperatureDetailViewChart()
+    }
+}
 
 extension CustomCommandPanelSection {
     init(text: String, imageName: String?, symbolRenderingMode: SymbolRenderingMode?, primaryColor: Color, secondaryColor: Color? = nil, tertiaryColor: Color? = nil, toggleButtonColor: Color? = nil, alertTitle: String? = nil, alertMessage: String? = nil, alertAction: (() -> Void)? = nil, commandSent: Binding<Bool>) {

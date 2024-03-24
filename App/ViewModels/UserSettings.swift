@@ -26,7 +26,7 @@ class UserSettings: ObservableObject {
         if let defaultCamera = UserDefaults.standard.string(forKey: "defaultCamera") {
             self.defaultCamera = IPCamera(rawValue: defaultCamera) ?? .cam1
         } else {
-            self.defaultCamera = .cam1
+            self.defaultCamera = .cam3
         }
 
         if let defaultPlotInterval = UserDefaults.standard.string(forKey: "defaultPlotInterval") {

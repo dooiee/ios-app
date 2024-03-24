@@ -334,27 +334,25 @@ extension FirebaseHomeView {
                         } })
                     .withPressableStyle()
                     .transition(.opacity.combined(with: .move(edge: .bottom)).combined(with: .scale))
-                    // TODO: (03/10/2023) - This was commented out because it was causing a build error.
-                    // Needs to be reintegrated.
-//                    .fullScreenCover(isPresented: $showRFRemote2, content: { FirebaseTemperatureDetailViewChart()
-//                            .background(BackgroundBlurView())
-//                            .offset(x: offsetControlPanelTab.width)
-//                            .opacity(2 - Double(abs(offsetControlPanelTab.width / 150)))
-//                            .gesture(
-//                                DragGesture()
-//                            .onChanged { gesture in
-//                                offsetControlPanelTab = gesture.translation
-//                                    }
-//                            .onEnded { value in
-//                                if value.location.x - value.startLocation.x > 150 {
-//                                    withAnimation(.spring()) { showRFRemote2.toggle() }
-//                                    offsetControlPanelTab = .zero
-//                                } else {
-//                                    offsetControlPanelTab = .zero
-//                                }
-//                            })
-//                    })
-//                    .transition(.opacity.combined(with: .move(edge: .bottom)).combined(with: .scale))
+                    .fullScreenCover(isPresented: $showRFRemote2, content: { FirebaseTemperatureDetailViewChart()
+                            .background(BackgroundBlurView())
+                            .offset(x: offsetControlPanelTab.width)
+                            .opacity(2 - Double(abs(offsetControlPanelTab.width / 150)))
+                            .gesture(
+                                DragGesture()
+                            .onChanged { gesture in
+                                offsetControlPanelTab = gesture.translation
+                                    }
+                            .onEnded { value in
+                                if value.location.x - value.startLocation.x > 150 {
+                                    withAnimation(.spring()) { showRFRemote2.toggle() }
+                                    offsetControlPanelTab = .zero
+                                } else {
+                                    offsetControlPanelTab = .zero
+                                }
+                            })
+                    })
+                    .transition(.opacity.combined(with: .move(edge: .bottom)).combined(with: .scale))
                     Spacer()
                     Button(action: { showSolenoidControl.toggle()
                          } ,

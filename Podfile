@@ -8,6 +8,6 @@ target 'Project-Shangri-La' do
   # Pods for Project-Shangri-La
   pod 'MobileVLCKit', '~> 3.6.0b10'
   # CodableFirebase pod for the Firebase Realtime Database
-  # pod 'CodableFirebase'
+  pod 'CodableFirebase'
 
 end
