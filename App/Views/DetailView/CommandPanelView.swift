@@ -106,11 +106,14 @@ struct FirebaseTemperatureDetailViewChart: View {
     @StateObject private var arduinoControl: ArduinoControlViaFirebase<LEDColorData>
     // ...
     
+    @StateObject private var arduinoVM = ArduinoViewModel()
+    
     @State var command = false
     @State var commandSent = false
     @State var test1CommandSent = false
     @State var colorCommandSent = false
     @State var commandSentResponse: String? // Define commandSentResponse here
+    @State var statusCommandSent = false
     
     @State private var selectedColor: Color = Color.white
     @State private var isColorChanged = false
@@ -134,6 +137,7 @@ struct FirebaseTemperatureDetailViewChart: View {
                 colorScheme == .light ? Color.white.ignoresSafeArea() : Color.black.ignoresSafeArea()
                 List {
                     onBoardLED
+                    fetchLEDStatusSection
                     firebaseSection
                     mqttSection
                     networkingSection
@@ -243,6 +247,113 @@ extension FirebaseTemperatureDetailViewChart {
             })
         }
 //    } // ForEach
+    }
+    
+    private var onBoardLED: some View {
+        Section(header: Text("MKR On-Board RGB"), footer:
+            HStack {
+            Text(colorCommandSent ? commandSentResponse ?? "" : "")
+            })
+        {
+            VStack {
+                ColorPicker(selection: $selectedColor, supportsOpacity: true) {
+                    HStack(alignment: .center, spacing: 5) {
+                        Text("Color Picker")
+                            .foregroundColor(.primary)
+                            .cornerRadius(8)
+                        Spacer()
+                        VStack {
+                            HStack {
+                                Text("R:\(Int(selectedColor.rgbaComponents.red * 255))")
+                                    .foregroundColor(.secondary)
+                                .font(.caption).bold()
+                                Text("G:\(Int(selectedColor.rgbaComponents.green * 255))")
+                                    .foregroundColor(.secondary)
+                                    .font(.caption).bold()
+                                Text("B:\(Int(selectedColor.rgbaComponents.blue * 255))")
+                                    .foregroundColor(.secondary)
+                                    .font(.caption).bold()
+                            }
+                            Text("Brightness: \(Int(selectedColor.rgbaComponents.alpha * 100))%")
+                                .foregroundColor(.secondary)
+                                .font(.caption).bold()
+                        }
+                    }
+                }
+            }
+            CustomCommandPanelSection(
+                text: "Send Color to MKR 1010?",
+                imageName: "light.beacon.max",
+                symbolRenderingMode: .palette,
+                primaryColor: Color.blue,
+                secondaryColor: Color.blue,
+                alertMessage: "Would you like to set the on-board MKR-1010 LED to the Color Picker color?",
+                alertAction: {
+                    arduinoControl.setOnBoardLEDColor(color: selectedColor) { success in
+                        DispatchQueue.main.async {
+                            commandSentResponse = success ? "Upload Successful!" : "Upload Error"
+                        }
+                    }
+                },
+                commandSent: $colorCommandSent
+            )
+        }
+    }
+    
+    private var fetchLEDStatusSection: some View {
+        Section(header: Text("Arduino LED Status"), footer: footerView) {
+            Button(action: {
+                arduinoVM.fetchLEDStatus()
+                statusCommandSent = true // Set this to true once the button is pressed
+            }) {
+                HStack(alignment: .center, spacing: 5) {
+                    if let status = arduinoVM.ledStatus {
+                        Text("Status")
+                            .foregroundColor(.primary)
+                            .cornerRadius(8)
+                        Spacer()
+                        VStack {
+                            HStack {
+                                Text("R:\(status.red)")
+                                    .foregroundColor(.secondary)
+                                    .font(.caption).bold()
+                                Text("G:\(status.green)")
+                                    .foregroundColor(.secondary)
+                                    .font(.caption).bold()
+                                Text("B:\(status.blue)")
+                                    .foregroundColor(.secondary)
+                                    .font(.caption).bold()
+                            }
+                            Text("Intensity: \(status.intensity)")
+                                .foregroundColor(.secondary)
+                                .font(.caption).bold()
+                        }.padding(.trailing, 5.0)
+                        // Show the refresh button if StatusCommandSent is true
+                        if statusCommandSent {
+                            Image(systemName: "arrow.clockwise")
+                                .foregroundColor(.blue)
+                                .imageScale(.large)
+                        }
+                    } else {
+                        Text("Fetch LED Status")
+                            .foregroundColor(.primary)
+                            .cornerRadius(8)
+                    }
+                }
+            }
+            .buttonStyle(BorderlessButtonStyle()) // Apply borderless button style to make the entire row clickable without button-like appearance
+        }
+    }
+    
+    private var footerView: some View {
+        Group {
+            if let errorMessage = arduinoVM.errorMessage {
+                Text(errorMessage)
+                    .foregroundColor(.red)
+            } else {
+                EmptyView()
+            }
+        }
     }
     
     private var firebaseSection: some View {
@@ -368,58 +479,6 @@ extension FirebaseTemperatureDetailViewChart {
             )
         }
     }
-    
-    private var onBoardLED: some View {
-        Section(header: Text("MKR On-Board RGB"), footer:
-            HStack {
-            Text(colorCommandSent ? commandSentResponse ?? "" : "")
-            })
-        {
-            VStack {
-                ColorPicker(selection: $selectedColor, supportsOpacity: true) {
-                    HStack(alignment: .center, spacing: 5) {
-                        Text("Color Picker")
-                            .foregroundColor(.primary)
-                            .cornerRadius(8)
-                        Spacer()
-                        VStack {
-                            HStack {
-                                Text("R:\(Int(selectedColor.rgbaComponents.red * 255))")
-                                    .foregroundColor(.secondary)
-                                .font(.caption).bold()
-                                Text("G:\(Int(selectedColor.rgbaComponents.green * 255))")
-                                    .foregroundColor(.secondary)
-                                    .font(.caption).bold()
-                                Text("B:\(Int(selectedColor.rgbaComponents.blue * 255))")
-                                    .foregroundColor(.secondary)
-                                    .font(.caption).bold()
-                            }
-                            Text("Brightness: \(Int(selectedColor.rgbaComponents.alpha * 100))%")
-                                .foregroundColor(.secondary)
-                                .font(.caption).bold()
-                        }
-                    }
-                }
-            }
-            CustomCommandPanelSection(
-                text: "Send Color to MKR 1010?",
-                imageName: "light.beacon.max",
-                symbolRenderingMode: .palette,
-                primaryColor: Color.blue,
-                secondaryColor: Color.blue,
-                alertMessage: "Would you like to set the on-board MKR-1010 LED to the Color Picker color?",
-                alertAction: {
-                    arduinoControl.setOnBoardLEDColor(color: selectedColor) { success in
-                        DispatchQueue.main.async {
-                            commandSentResponse = success ? "Upload Successful!" : "Upload Error"
-                        }
-                    }
-                },
-                commandSent: $colorCommandSent
-            )
-        }
-    }
-
 }
 
 struct FirebaseTemperatureDetailViewChart_Previews: PreviewProvider {
