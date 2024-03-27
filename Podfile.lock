@@ -1,0 +1,20 @@
+PODS:
+  - CodableFirebase (0.2.1)
+  - MobileVLCKit (3.6.0b11)
+
+DEPENDENCIES:
+  - CodableFirebase
+  - MobileVLCKit (~> 3.6.0b10)
+
+SPEC REPOS:
+  trunk:
+    - CodableFirebase
+    - MobileVLCKit
+
+SPEC CHECKSUMS:
+  CodableFirebase: 0bf201991eeec35eb9fcd987d271ea463cf34a80
+  MobileVLCKit: d20b1e96a93446d97abd377a1daa230202147619
+
+PODFILE CHECKSUM: 01dc015012050a0bf47e68818746f5e592dc78a0
+
+COCOAPODS: 1.12.1

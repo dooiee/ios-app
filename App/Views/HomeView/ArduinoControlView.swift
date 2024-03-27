@@ -11,7 +11,9 @@ struct ArduinoControlView: View {
     @Environment(\.colorScheme) var colorScheme
     @Environment(\.presentationMode) var presentationMode
     @Environment(\.openURL) var openURL
-    let urlFirebaseConsole = "https://console.firebase.google.com" // url has been changed to generic firebase url
+
+    let urlFirebaseConsole = Constants.FirebaseDb.Credentials.FIREBASE_CONSOLE_URL
+    
     @State var showArduinoControl = false
     @State var arduinoReset = false
     @State var confirmArduinoReset = false
@@ -214,6 +216,22 @@ extension ArduinoControlView {
                         Text("\(formatter.localizedString(fromTimeInterval: lastUploadTime - now))")
                     }
                 }
+                /*
+                 //                        Text("Last Updated:\(parameter.lastUpload.convertIntLongToTimestamp(dateformat: "EEEE MM/dd @ h:mm a"))")
+                 //                ZStack {
+                 //                    RoundedRectangle(cornerRadius: 3)
+                 //                        .foregroundColor(lastUpdateValueChanged ? Color.secondary.opacity(0.2) : Color.clear)
+                 //                        .frame(width: 65, height: 13)
+                 //                    let now = (Date().timeIntervalSince1970)
+                 //                    let lastUploadTime = Double(parameter.lastUpload/1_000)
+                 //                    let difference = lastUploadTime - now
+                 //                    let formatter = RelativeDateTimeFormatter()
+                 //                    Text("\(formatter.localizedString(fromTimeInterval: lastUploadTime - now))")
+                                     
+                 //                    Text("\(difference) = \(lastUploadTime) - \(now)")
+                 //                    Text("\(parameter.lastUpload.convertIntLongToTimestamp(dateformat: "EEEE MM/dd @ h:mm a"))")
+                                 //}
+                 */
             }
         }
     }

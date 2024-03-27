@@ -44,6 +44,16 @@ extension ForecastInfo {
         snowfallAmount = forecast.snowfallAmount
         uvIndex = forecast.uvIndex.value
     }
+//    init(_ forecast: HourWeather) {
+//        date = forecast.date
+//        condition = forecast.condition.description
+//        symbolName = forecast.symbolName
+//        temperature = .hourly(forecast.temperature)
+//        precipitation = forecast.precipitation.description
+//        precipitationChance = forecast.precipitationChance
+//        windSpeed = forecast.wind.speed
+//        uvIndex = forecast.uvIndex.value
+//    }
 }
 
 extension ForecastInfo {

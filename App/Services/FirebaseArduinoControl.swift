@@ -12,18 +12,20 @@ import SwiftUI
 import FirebaseSharedSwift
 
 class FirebaseArduinoControl: ObservableObject {
-    ///
+
     @Published var solenoidSignalCode: String = ""
     @Published var solenoidPowerState: Bool = false
     @Published var resetStateBoolTest: Bool = false
-    ///
+
     @Published var arduinoStatus = [ArduinoStatus]()
+    
     @Published var resetCurrentlyInProgress: Int = 0 // maybe should change to bool
     @Published var resetStateBool: Bool = false
     
     let firebaseParentPathName: String = "Arduino Status"
     let childPathResetting: String = "Arduino Status/Resetting"
     let childPathESP32Resetting: String = "Arduino Status/ESP32 Resetting"
+
     let childPathWifiRssi: String = "Arduino Status/Wi-Fi RSSI"
     let childPathWifiStatus: String = "Arduino Status/Wi-Fi Status"
             

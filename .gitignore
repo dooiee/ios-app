@@ -9,3 +9,15 @@
 
 # any secrets.h files
 **/secrets.h
+
+# google service plist
+**/GoogleService-Info.plist
+
+# Constants.swift
+**/Constants.swift
+
+# UserInterfaceState.xcuserstate
+**/UserInterfaceState.xcuserstate
+
+# Pods
+Pods/

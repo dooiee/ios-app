@@ -4,14 +4,14 @@
 //
 //  Created by Nick Doolittle on 2/12/22.
 //
-
 import SwiftUI
 import Firebase
 
 @main
 struct Project_Shangri_LaApp: App {
     
-    @StateObject private var fdr = FirebaseDataRetreivalForInterval()
+    @StateObject var userSettings = UserSettings() // testing
+    @StateObject private var fvm = FirebaseDataService()
     @State private var showLaunchView: Bool = true
     
     init() {
@@ -22,15 +22,15 @@ struct Project_Shangri_LaApp: App {
     var body: some Scene {
         WindowGroup {
             ZStack {
-                //MARK: Comment out launch screen animation and main view for now
                 FirebaseHomeView()
-//                   ZStack {
-//                     if showLaunchView {
-//                         LaunchView(showLaunchView: $showLaunchView)
-//                             .transition(AnyTransition.opacity.animation(.easeIn(duration: 0.5)))
-//                     }
-            } //ZStack
-            .environmentObject(fdr)
+                    .environmentObject(userSettings) // testing
+                ZStack {
+                    if showLaunchView {
+                        LaunchView(showLaunchView: $showLaunchView)
+                    }
+                } //ZStack
+                .environmentObject(fvm)
+            }
         } //WindowGroup
     } //Scene
 } //struct
