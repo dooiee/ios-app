@@ -25,6 +25,7 @@ struct ColorTheme {
     let gray = #colorLiteral(red: 0.6642242074, green: 0.6642400622, blue: 0.6642315388, alpha: 1)
     let batteryGreen = Color(red: 14/255, green: 252/255, blue: 5/255)
     let batteryYellow = Color(red: 254/255, green: 207/255, blue: 15/255)
+    let batteryRed = Color(red: 255/255, green: 0/255, blue: 0/255)
     let accentBabyBlue = Color("AccentColorBabyBlue")
     let accentGreen = Color("AccentColorGreen")
     let accentPeach = Color("AccentColorPeach")

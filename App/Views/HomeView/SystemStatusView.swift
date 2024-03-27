@@ -11,6 +11,8 @@ struct SystemStatusView: View {
     @Environment(\.colorScheme) var colorScheme
     @Environment(\.presentationMode) var presentationMode
     @Environment(\.openURL) var openURL
+    
+    @StateObject private var arduinoVM = ArduinoViewModel()
 
     let urlFirebaseConsole = Constants.FirebaseDb.Credentials.FIREBASE_CONSOLE_URL
     
@@ -31,12 +33,15 @@ struct SystemStatusView: View {
     
     @State var showArduinoStatisticsView: Bool = false
     
+    @State private var showingErrorAlert = false
+    
     var body: some View {
         ZStack {
             colorScheme == .light ? Color.white.ignoresSafeArea() : Color.black.ignoresSafeArea()
             VStack {
                 headerSection
                 List {
+                    statusSection
                     centralHubStatusSection
                     peripheralStatusSection
                     rfTransmitterStatusSection
@@ -109,6 +114,44 @@ extension SystemStatusView {
             }
         }
     }
+    
+    
+    private var statusSection: some View {
+        Section(header: Text("Status")) {
+            HStack {
+                Image(systemName: "cable.connector.horizontal").symbolRenderingMode(.hierarchical)
+                    .imageScale(.large).offset(x: -1)
+                Text("Central Hub")
+                Spacer()
+                if let ledStatus = arduinoVM.ledStatus {
+                    Text("Online")
+                        .foregroundColor(.secondary)
+                        .font(.subheadline).bold()
+                    Circle()
+                        .foregroundColor(Color(red: Double(ledStatus.red)/255, green: Double(ledStatus.green)/255, blue: Double(ledStatus.blue)/255, opacity: Double(ledStatus.intensity)/100))
+                        .frame(width: 12.0, height: 12.0)
+                        .padding(.horizontal, 2)
+                } else if arduinoVM.errorMessage != nil {
+                    Image(systemName: "exclamationmark.triangle")
+                        .foregroundColor(.yellow)
+                        .onTapGesture {
+                            showingErrorAlert = true
+                        }
+                    .alert(isPresented: $showingErrorAlert) {
+                        Alert(title: Text("Error"), message: Text(arduinoVM.errorMessage ?? "Unknown error"), dismissButton: .default(Text("OK")))
+                    }
+                } else {
+                    Text("Fetching...")
+                        .foregroundColor(.gray)
+                        .font(.subheadline)
+                }
+            }
+        }
+        .onAppear {
+            arduinoVM.fetchLEDStatus()
+        }
+    }
+
     private var centralHubStatusSection: some View {
         ForEach (firebaseArduinoControl.arduinoStatus, id: \.self) { parameter in
             Section(header: Text("Central Hub")) {
@@ -158,6 +201,8 @@ extension SystemStatusView {
                     Spacer()
                     if parameter.wifiStatus == 3 {
                         Text("Connected")
+                            .foregroundColor(.secondary)
+                            .font(.subheadline).bold()
                         Circle()
                             .foregroundColor(Color.theme.batteryGreen)
                             .frame(width: 12.0, height: 12.0)
@@ -165,6 +210,10 @@ extension SystemStatusView {
                     }
                     else if parameter.wifiStatus == 6 {
                         Text("Disconnected")
+                        Circle()
+                            .foregroundColor(Color.theme.batteryRed)
+                            .frame(width: 12.0, height: 12.0)
+                            .padding(.horizontal, 2)
                     }
                     else {
                         Text("Not Connected")

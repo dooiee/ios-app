@@ -249,7 +249,7 @@ extension FirebaseHomeView {
                         } })
                     .withPressableStyle()
                     .fullScreenCover(isPresented: $showArduinoControl,
-                                     content: { ArduinoControlView()
+                                     content: { SystemStatusView()
                             .background(BackgroundBlurView())
                             .offset(x: offsetArduinoTab.width)
                             .opacity(2 - Double(abs(offsetArduinoTab.width / 150)))
