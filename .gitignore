@@ -19,5 +19,8 @@
 # UserInterfaceState.xcuserstate
 **/UserInterfaceState.xcuserstate
 
+# xcuserdata files
+**/xcuserdata/
+
 # Pods
 Pods/
