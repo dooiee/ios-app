@@ -33,7 +33,8 @@ struct SystemStatusView: View {
     
     @State var showArduinoStatisticsView: Bool = false
     
-    @State private var showingErrorAlert = false
+    @State private var showingLEDStatusErrorAlert = false
+    @State private var showingNanoStatusErrorAlert = false
     
     var body: some View {
         ZStack {
@@ -42,15 +43,24 @@ struct SystemStatusView: View {
                 headerSection
                 List {
                     statusSection
-                    centralHubStatusSection
-                    peripheralStatusSection
-                    rfTransmitterStatusSection
-                    wifiStatusSection
-                    onlineSinceSection
-                    resetStatusSection
+//                    centralHubStatusSection
+//                    peripheralStatusSection
+//                    rfTransmitterStatusSection
+//                    wifiStatusSection
+//                    onlineSinceSection
+//                    resetStatusSection
                     firebaseLinkSection
                     statisticsSection
                 }
+                .refreshable {
+                    Task {
+                        await arduinoVM.fetchStatusesSequentially()
+                    }
+                }
+//                .refreshable {
+//                    arduinoVM.fetchLEDStatus()
+//                    arduinoVM.fetchNanoStatus()
+//                }
             }.onAppear {
                 firebaseArduinoControl.getArduinoStatus()
                 showArduinoControl = firebaseArduinoControl.getArduinoResetStateBool()
@@ -119,9 +129,13 @@ extension SystemStatusView {
     private var statusSection: some View {
         Section(header: Text("Status")) {
             HStack {
-                Image(systemName: "cable.connector.horizontal").symbolRenderingMode(.hierarchical)
-                    .imageScale(.large).offset(x: -1)
-                Text("Central Hub")
+                Image(systemName: "cable.connector.horizontal")
+                    .symbolRenderingMode(.hierarchical)
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .padding(.trailing, 2.0)
+                    .frame(width: 22, height: 22)
+                Text("Central Hub").foregroundColor(Color.primary)
                 Spacer()
                 if let ledStatus = arduinoVM.ledStatus {
                     Text("Online")
@@ -131,15 +145,65 @@ extension SystemStatusView {
                         .foregroundColor(Color(red: Double(ledStatus.red)/255, green: Double(ledStatus.green)/255, blue: Double(ledStatus.blue)/255, opacity: Double(ledStatus.intensity)/100))
                         .frame(width: 12.0, height: 12.0)
                         .padding(.horizontal, 2)
-                } else if arduinoVM.errorMessage != nil {
+                } else if arduinoVM.ledStatusError != nil {
                     Image(systemName: "exclamationmark.triangle")
                         .foregroundColor(.yellow)
                         .onTapGesture {
-                            showingErrorAlert = true
+                            showingLEDStatusErrorAlert = true
                         }
-                    .alert(isPresented: $showingErrorAlert) {
-                        Alert(title: Text("Error"), message: Text(arduinoVM.errorMessage ?? "Unknown error"), dismissButton: .default(Text("OK")))
+                    .alert(isPresented: $showingLEDStatusErrorAlert) {
+                        Alert(title: Text("Error"), message: Text(arduinoVM.ledStatusError ?? "Unknown error"), dismissButton: .default(Text("OK")))
                     }
+                } else {
+                    Text("Fetching...")
+                        .foregroundColor(Color.secondary)
+                        .font(.subheadline)
+                }
+            }
+            HStack {
+                Image(systemName: "antenna.radiowaves.left.and.right")
+                    .symbolRenderingMode(.hierarchical)
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .padding(.trailing, 2.0)
+                    .frame(width: 22, height: 22)
+                Text("Peripheral").foregroundColor(Color.primary)
+                Spacer()
+                if let nanoStatus = arduinoVM.nanoStatus {
+                    if nanoStatus.connected {
+                        Text("Connected")
+                            .foregroundColor(.secondary)
+                            .font(.subheadline).bold()
+                        Circle()
+                            .foregroundColor(Color.theme.batteryGreen)
+                            .frame(width: 12.0, height: 12.0)
+                            .padding(.horizontal, 2)
+                        if let rssi = nanoStatus.signalStrength {
+                            Text("Signal: \(rssi) dBm")
+                                .foregroundColor(.secondary)
+                                .font(.subheadline)
+                        }
+                    } else {
+                        Text("Disconnected")
+                            .foregroundColor(.red)
+                            .font(.subheadline).bold()
+                        Circle()
+                            .foregroundColor(Color.theme.batteryRed)
+                            .frame(width: 12.0, height: 12.0)
+                            .padding(.horizontal, 2)
+                        Text("Last connected: \(nanoStatus.timeSinceLastConnection ?? 0) seconds ago")
+                            .foregroundColor(.secondary)
+                            .font(.subheadline)
+                    }
+                } else if arduinoVM.nanoStatusError != nil {
+                    Image(systemName: "exclamationmark.triangle")
+                        .foregroundColor(.yellow)
+                        .onTapGesture {
+                            showingNanoStatusErrorAlert = true
+                        }
+                        .alert(isPresented: $showingNanoStatusErrorAlert) {
+                            Alert(title: Text("Error"), message: Text(arduinoVM.nanoStatusError ?? "Unknown error"), dismissButton: .default(Text("OK")))
+                        }
                 } else {
                     Text("Fetching...")
                         .foregroundColor(.gray)
@@ -148,7 +212,9 @@ extension SystemStatusView {
             }
         }
         .onAppear {
-            arduinoVM.fetchLEDStatus()
+            Task {
+                await arduinoVM.fetchStatusesSequentially()
+            }
         }
     }
 

@@ -347,7 +347,7 @@ extension FirebaseTemperatureDetailViewChart {
     
     private var footerView: some View {
         Group {
-            if let errorMessage = arduinoVM.errorMessage {
+            if let errorMessage = arduinoVM.ledStatusError {
                 Text(errorMessage)
                     .foregroundColor(.red)
             } else {
