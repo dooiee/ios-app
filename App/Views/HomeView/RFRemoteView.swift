@@ -11,8 +11,7 @@ struct RFRemoteView: View {
     
     @Environment(\.colorScheme) var colorScheme
     @Environment(\.presentationMode) var presentationMode
-    @StateObject private var firebaseUploadData = FirebaseUploadData()
-    @State var powerState: Bool
+    @ObservedObject var firebaseUploadData: FirebaseUploadData
     @State private var signalLED: Bool = false
     
     let columns: [GridItem] = [
@@ -167,43 +166,29 @@ extension RFRemoteView {
                                 Circle()
                                     .foregroundColor(Color.gray)
                                     .padding(.horizontal, horizontalButtonPadding)
-                                    .overlay(Circle().stroke(self.powerState == true ? Color.theme.batteryGreen : colorScheme == .light ? Color.black : Color.secondary, lineWidth: 3).padding(.horizontal, horizontalButtonPadding))
+                                    .overlay(Circle().stroke(firebaseUploadData.rfPowerState ? Color.theme.batteryGreen : colorScheme == .light ? Color.black : Color.secondary, lineWidth: 3).padding(.horizontal, horizontalButtonPadding))
                                 Image(systemName: "power")
                                     .font(.system(size: 35).weight(.semibold))
-                                    .foregroundColor(powerState == true ? Color.theme.batteryGreen : Color.black)
+                                    .foregroundColor(firebaseUploadData.rfPowerState ? Color.theme.batteryGreen : Color.black)
                             }//.frame(height: UIScreen.main.bounds.height/9)
-                                .onTapGesture {
-                                    HapticManager.instance.impact(style: .soft)
-                                    self.powerState.toggle()
-                                    powerState == true ? firebaseUploadData.uploadRFPowerSignal(rfPowerState: rfOnCode) : firebaseUploadData.uploadRFPowerSignal(rfPowerState: rfOffCode)
-                                    self.signalLED.toggle()
-                                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-                                        withAnimation {
-                                            self.signalLED.toggle()
-                                        }
+                            .onTapGesture {
+                                HapticManager.instance.impact(style: .soft)
+                                firebaseUploadData.rfPowerState.toggle()
+                                let rfPowerState = firebaseUploadData.rfPowerState ? rfOnCode : rfOffCode
+                                firebaseUploadData.uploadRFPowerSignal(rfPowerState: rfPowerState)
+                                self.signalLED.toggle()
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                                    withAnimation {
+                                        self.signalLED.toggle()
                                     }
                                 }
+                            }
                         }
-//                        if index == 3 {
-//                            Text("TEST")
-//                                .font(.system(size: 35).weight(.bold)).foregroundColor(Color.black)
-//                                .onTapGesture {
-//                                    powerState = firebaseUploadData.getCurrentRFPowerState()
-//                                    self.signalLED.toggle()
-//                                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
-//                                        withAnimation {
-//                                            self.signalLED.toggle()
-//                                        }
-//                                    }
-//                                }
-//                        }
                     } // ZStack
                 } // label
             } // ForEach
             .onAppear {
-                if powerState == false {
-                    powerState = firebaseUploadData.getCurrentRFPowerState()
-                }
+                firebaseUploadData.getCurrentRFPowerState()
             }
         } // LazyVGrid
         .padding(.horizontal)
@@ -213,6 +198,6 @@ extension RFRemoteView {
 
 struct RFRemoteView_Previews: PreviewProvider {
     static var previews: some View {
-        RFRemoteView(powerState: true)
+        RFRemoteView(firebaseUploadData: FirebaseUploadData())
     }
 }

@@ -52,7 +52,6 @@ extension Date {
 }
 
 struct HourlyForcastViewModel: View {
-    
     let hourWeatherList: [HourWeather]
     
     var body: some View {
@@ -128,6 +127,8 @@ struct HourlyForecastView: View {
     let weatherService = WeatherService.shared
     @StateObject private var locationManager = LocationManager()
     @State private var weather: Weather?
+    @State private var isLoading = false
+    @State private var errorMessage: String?
     
     var hourlyWeatherData: [HourWeather] {
         if let weather {
@@ -141,34 +142,34 @@ struct HourlyForecastView: View {
     
     var body: some View {
         VStack {
-            HourlyForcastViewModel(hourWeatherList: hourlyWeatherData)
+            if isLoading {
+                ProgressView()
+            } else if let _ = errorMessage {
+                VStack {
+                    Spacer()
+                    HStack {
+                        Spacer()
+                        Image(systemName: "exclamationmark.triangle")
+                            .foregroundColor(.gray)
+                        Spacer()
+                    }
+                    Spacer()
+                }
+            } else {
+                HourlyForcastViewModel(hourWeatherList: hourlyWeatherData)
+            }
         }
         .task {
             do {
                 self.weather = try await weatherService.weather(for: Secrets.POND_COORDINATES)
+                isLoading = false
                 print("Returned Hourly Weather Data For The Next 24 Hours.")
-            } catch {
+            } catch let error {
+                isLoading = false
+                self.errorMessage = error.localizedDescription
                 print(error)
             }
         }
-    }
-}
-
-struct HourlyForecastView_Previews: PreviewProvider {
-    static var previews: some View {
-        HourlyForecastView().frame(height: 150).padding()
-            .previewLayout(.sizeThatFits)
-    }
-}
-struct DailyWeatherView_Previews: PreviewProvider {
-    static var previews: some View {
-        DailyWeatherView()
-    }
-}
-
-struct DailyWeatherViewRainfall_Previews: PreviewProvider {
-    static var previews: some View {
-        DailyWeatherView2()
     }
 }
 
@@ -330,9 +331,9 @@ struct DailyWeatherViewModel: View {
 }
 
 struct DailyWeatherView: View {
-    
     let weatherService = WeatherService.shared
     @State private var weather: Weather?
+    @State private var errorMessage: String?
     
     var dailyWeatherData: [DayWeather] {
         if let weather {
@@ -353,16 +354,30 @@ struct DailyWeatherView: View {
     
     var body: some View {
         VStack {
-            HStack {
-                DailyWeatherViewModel(dailyWeatherList: dailyWeatherData, currentTemperature: currentTemperature)
-            }
-            .task {
-                do {
-                    self.weather = try await weatherService.weather(for: Secrets.POND_COORDINATES)
-                    print("Returned Daily Weather Data For The Week.")
-                } catch {
-                    print(error)
+            if let errorMessage = errorMessage {
+                // Center the error message using GeometryReader
+                GeometryReader { geometry in
+                    VStack {
+                        Spacer()
+                        Image(systemName: "exclamationmark.triangle")
+                            .foregroundColor(.gray)
+                            .frame(width: geometry.size.width)
+                        Spacer()
+                    }
                 }
+            } else {
+                HStack {
+                    DailyWeatherViewModel(dailyWeatherList: dailyWeatherData, currentTemperature: currentTemperature)
+                }
+            }
+        }
+        .task {
+            do {
+                self.weather = try await weatherService.weather(for: Secrets.POND_COORDINATES)
+                print("Returned Daily Weather Data For The Week.")
+            } catch {
+                self.errorMessage = "Failed to fetch data: \(error.localizedDescription)"
+                print(error)
             }
         }
     }
@@ -419,9 +434,9 @@ struct DailyWeatherViewModel2: View {
 }
 
 struct DailyWeatherView2: View {
-    
     let weatherService = WeatherService.shared
     @State private var weather: Weather?
+    @State private var errorMessage: String?
     
     var dailyWeatherData: [DayWeather] {
         if let weather {
@@ -435,16 +450,29 @@ struct DailyWeatherView2: View {
     
     var body: some View {
         VStack {
-            HStack {
-                DailyWeatherViewModel2(dailyWeatherList: dailyWeatherData)
-            }
-            .task {
-                do {
-                    self.weather = try await weatherService.weather(for: Secrets.POND_COORDINATES)
-                    print("Returned Weather Rainfall Data For The Next 72 Hours.")
-                } catch {
-                    print(error)
+            if let _ = errorMessage {
+                GeometryReader { geometry in
+                    VStack {
+                        Spacer()
+                        Image(systemName: "exclamationmark.triangle")
+                            .foregroundColor(.gray)
+                            .frame(width: geometry.size.width)
+                        Spacer()
+                    }
                 }
+            } else {
+                HStack {
+                    DailyWeatherViewModel2(dailyWeatherList: dailyWeatherData)
+                }
+            }
+        }
+        .task {
+            do {
+                self.weather = try await weatherService.weather(for: Secrets.POND_COORDINATES)
+                print("Returned Weather Rainfall Data For The Next 72 Hours.")
+            } catch {
+                self.errorMessage = "Failed to fetch data: \(error.localizedDescription)"
+                print(error)
             }
         }
     }
@@ -460,7 +488,6 @@ struct CurrentWeatherViewModel: View {
 }
 
 struct CurrentWeatherView: View {
-    
     let weatherService = WeatherService.shared
     @State private var weather: CurrentWeather?
     
@@ -481,5 +508,23 @@ struct CurrentWeatherView: View {
                 print(error)
             }
         }
+    }
+}
+
+struct HourlyForecastView_Previews: PreviewProvider {
+    static var previews: some View {
+        HourlyForecastView().frame(height: 150).padding()
+            .previewLayout(.sizeThatFits)
+    }
+}
+struct DailyWeatherView_Previews: PreviewProvider {
+    static var previews: some View {
+        DailyWeatherView()
+    }
+}
+
+struct DailyWeatherViewRainfall_Previews: PreviewProvider {
+    static var previews: some View {
+        DailyWeatherView2()
     }
 }

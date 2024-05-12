@@ -13,6 +13,15 @@ class ArduinoViewModel: ObservableObject {
     @Published var nanoStatus: NanoStatus?
     @Published var nanoStatusError: String?
     
+    func resetStatuses() {
+        DispatchQueue.main.async {
+            self.ledStatus = nil
+            self.nanoStatus = nil
+            self.ledStatusError = nil
+            self.nanoStatusError = nil
+        }
+    }
+    
     // New function that wraps the fetching process
     func fetchStatusesSequentially() async {
         await fetchLEDStatusAsync()
@@ -49,6 +58,7 @@ class ArduinoViewModel: ObservableObject {
                 do {
                     self.ledStatus = try JSONDecoder().decode(LEDStatus.self, from: data)
                     self.ledStatusError = nil
+                    print("LED Status: \(String(describing: self.ledStatus))")
                 } catch {
                     self.ledStatusError = "Decoding error: \(error.localizedDescription)"
                 }

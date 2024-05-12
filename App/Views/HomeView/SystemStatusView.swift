@@ -53,8 +53,11 @@ struct SystemStatusView: View {
                     statisticsSection
                 }
                 .refreshable {
-                    Task {
-                        await arduinoVM.fetchStatusesSequentially()
+                    arduinoVM.resetStatuses()
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {  // Delay before fetching
+                        Task {
+                            await arduinoVM.fetchStatusesSequentially()
+                        }
                     }
                 }
 //                .refreshable {
@@ -124,7 +127,6 @@ extension SystemStatusView {
             }
         }
     }
-    
     
     private var statusSection: some View {
         Section(header: Text("Status")) {
@@ -212,9 +214,15 @@ extension SystemStatusView {
             }
         }
         .onAppear {
-            Task {
-                await arduinoVM.fetchStatusesSequentially()
+            arduinoVM.resetStatuses()
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {  // Delay before fetching
+                Task {
+                    await arduinoVM.fetchStatusesSequentially()
+                }
             }
+        }
+        .onDisappear {
+            arduinoVM.resetStatuses()
         }
     }
 

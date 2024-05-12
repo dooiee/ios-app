@@ -86,34 +86,13 @@ class AverageValueAndCountForIntervalClass {
 public class FirebaseDataRetreivalForInterval: ObservableObject {
     
     @Published var returnedParameterValuesForTimeInterval = FirebaseTimeIntervalGeneric()
-    @Published var mockDataLog = [MockDataLog]()
     @Published var sensorDataLog = [SensorDataLog]()
-    @Published var timestamps1M: [Int] = []
-    @Published var temperature1M: [Double] = []
-    @Published var waterLevel1M: [Double] = []
-    @Published var turbidity1M: [Double] = []
-    @Published var tds1M: [Double] = []
-    @Published var ph1M: [Double] = []
-    @Published var oneMonthSortedDictionary2: OrderedDictionary<Int, Double> = [:] // commented out
-    @Published var oneMonthSortedDictionary: OrderedDictionary<String, Double> = [:] // added
-    @Published var temperatureSortedDictionary: OrderedDictionary<String, Double> = [:] // added
-    @Published var waterlevelSortedDictionary: OrderedDictionary<String, Double> = [:] // added
-    @Published var turbiditySortedDictionary: OrderedDictionary<String, Double> = [:] // added
-    @Published var tdsSortedDictionary: OrderedDictionary<String, Double> = [:] // added
-    @Published var phSortedDictionary: OrderedDictionary<String, Double> = [:] // added
-    
-    @Published var timestampsFiltered1H: [Int] = []
-    @Published var timestampsFiltered1H2: [String] = []
-    @Published var temperatureFiltered1H: [Double] = []
-    @Published var timestampsFiltered1W: [Int] = []
-    @Published var temperatureFiltered1W: [Double] = []
-    @Published var timestampsFiltered1M: [String] = [] // added
-    @Published var temperatureFiltered1M: [Double] = []
-    @Published var threeMonthSortedDictionary: OrderedDictionary<Int, Double> = [:]
-    @Published var timestampsFiltered3M: [Int] = []
-    @Published var temperatureFiltered3M: [Double] = []
-    
-    @Published var temperatures1Week: [Double]? = nil
+    @Published var oneMonthSortedDictionary: OrderedDictionary<String, Double> = [:]
+    @Published var temperatureSortedDictionary: OrderedDictionary<String, Double> = [:]
+    @Published var waterlevelSortedDictionary: OrderedDictionary<String, Double> = [:]
+    @Published var turbiditySortedDictionary: OrderedDictionary<String, Double> = [:]
+    @Published var tdsSortedDictionary: OrderedDictionary<String, Double> = [:]
+    @Published var phSortedDictionary: OrderedDictionary<String, Double> = [:]
     
     @Published var returnedParameterValuesFor1H: OrderedDictionary<String, Double>? = nil
     @Published var returnedParameterValuesFor1D: OrderedDictionary<String, Double>? = nil
@@ -124,12 +103,15 @@ public class FirebaseDataRetreivalForInterval: ObservableObject {
     @Published var returnedParameterValuesFor6M: OrderedDictionary<String, Double>? = nil
     @Published var returnedParameterValuesFor1Y: OrderedDictionary<String, Double>? = nil
     @Published var returnedParameterValuesForAll: OrderedDictionary<String, Double>? = nil
-    @Published var returnedParameterValuesForInterval: OrderedDictionary<String, Double>? = nil // added
+    @Published var returnedParameterValuesForInterval: OrderedDictionary<String, Double>? = nil
     
     let lastDayInterval: Int = 1_000*60*60*24
     let lastWeekInterval: Int = 1_000*60*60*24*7
     let lastMonthInterval: Int = 1_000*60*60*24*30
     let lastThreeMonthsInterval: Int = 1_000*60*60*24*90
+
+    @Published var timestampsFiltered1M: [String] = []
+    @Published var temperatureFiltered1M: [Double] = []
 
     init() {}
     
