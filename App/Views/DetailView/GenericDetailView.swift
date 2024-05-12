@@ -352,7 +352,7 @@ extension GenericDetailView {
 
 struct GenericDetailView_Previews: PreviewProvider {
     static var previews: some View {
-        GenericDetailView(title: "Parameter Title", legendUnits: "Parameter Units", accentColor: Color.theme.accent)
+        GenericDetailView(title: "Temperature", legendUnits: " F", accentColor: Color.theme.accent)
             .environmentObject(UserSettings())
     }
 }

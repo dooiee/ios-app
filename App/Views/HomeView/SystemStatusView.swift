@@ -216,6 +216,10 @@ extension SystemStatusView {
                 await arduinoVM.fetchStatusesSequentially()
             }
         }
+        .onDisappear {
+            arduinoVM.ledStatus = nil
+            arduinoVM.nanoStatus = nil
+        }
     }
 
     private var centralHubStatusSection: some View {

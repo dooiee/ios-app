@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		BE3F9FF82BEFD73300B631E7 /* DataRetreiver.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE3F9FF72BEFD73300B631E7 /* DataRetreiver.swift */; };
+		BE3F9FFA2BEFF79500B631E7 /* ParameterDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE3F9FF92BEFF79500B631E7 /* ParameterDetailView.swift */; };
 		BE449DF52BB0D2DA00989741 /* ArduinoViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE449DF42BB0D2DA00989741 /* ArduinoViewModel.swift */; };
 		BE6AF22D2BAF762A009EBEC1 /* Color.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE6AF1FC2BAF762A009EBEC1 /* Color.swift */; };
 		BE6AF22E2BAF762A009EBEC1 /* HapticManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE6AF1FD2BAF762A009EBEC1 /* HapticManager.swift */; };
@@ -62,6 +64,8 @@
 		06197D0EA1ED6CB8F535253F /* Pods-Project-Shangri-La.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Project-Shangri-La.debug.xcconfig"; path = "Target Support Files/Pods-Project-Shangri-La/Pods-Project-Shangri-La.debug.xcconfig"; sourceTree = "<group>"; };
 		50313E9E2ABD8B9C4D99A75E /* Pods-Project-Shangri-La.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Project-Shangri-La.release.xcconfig"; path = "Target Support Files/Pods-Project-Shangri-La/Pods-Project-Shangri-La.release.xcconfig"; sourceTree = "<group>"; };
 		5EFB6587E1E790A401430FD1 /* Pods_Project_Shangri_La.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Project_Shangri_La.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		BE3F9FF72BEFD73300B631E7 /* DataRetreiver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataRetreiver.swift; sourceTree = "<group>"; };
+		BE3F9FF92BEFF79500B631E7 /* ParameterDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParameterDetailView.swift; sourceTree = "<group>"; };
 		BE449DF42BB0D2DA00989741 /* ArduinoViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArduinoViewModel.swift; sourceTree = "<group>"; };
 		BE6AF1EB2BAF71C6009EBEC1 /* Project-Shangri-La.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Project-Shangri-La.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		BE6AF1FC2BAF762A009EBEC1 /* Color.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Color.swift; sourceTree = "<group>"; };
@@ -200,6 +204,7 @@
 				BE6AF20C2BAF762A009EBEC1 /* FirebaseDataRetreivalForInterval.swift */,
 				BE6AF20D2BAF762A009EBEC1 /* FirebaseRFTransmitter.swift */,
 				BE6AF20E2BAF762A009EBEC1 /* FirebaseSolenoidControl.swift */,
+				BE3F9FF72BEFD73300B631E7 /* DataRetreiver.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -233,6 +238,7 @@
 				BE6AF21A2BAF762A009EBEC1 /* GenericDetailView.swift */,
 				BE6AF21B2BAF762A009EBEC1 /* GenericViewSettings.swift */,
 				BE6AF21C2BAF762A009EBEC1 /* WeatherKitViewTest.swift */,
+				BE3F9FF92BEFF79500B631E7 /* ParameterDetailView.swift */,
 			);
 			path = DetailView;
 			sourceTree = "<group>";
@@ -418,8 +424,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				BE6AF23F2BAF762A009EBEC1 /* Test2ColorPicker.swift in Sources */,
+				BE3F9FFA2BEFF79500B631E7 /* ParameterDetailView.swift in Sources */,
 				BE6AF2322BAF762A009EBEC1 /* FirebaseModel.swift in Sources */,
 				BE6AF24C2BAF762A009EBEC1 /* SystemStatusView.swift in Sources */,
+				BE3F9FF82BEFD73300B631E7 /* DataRetreiver.swift in Sources */,
 				BE6AF2492BAF762A009EBEC1 /* FirebaseTestFunction.swift in Sources */,
 				BE6AF2422BAF762A009EBEC1 /* CommandPanelView.swift in Sources */,
 				BE6AF2402BAF762A009EBEC1 /* TESTArduinoColorPicker.swift in Sources */,
