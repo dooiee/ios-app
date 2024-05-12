@@ -37,11 +37,11 @@ struct FirebaseHomeView: View {
     @State var offsetControlPanelTab = CGSize.zero
     
     @Environment(\.colorScheme) var colorScheme
-    @EnvironmentObject private var vm: FirebaseDataService
-    @EnvironmentObject var userSettings: UserSettings // was private at first
-    @StateObject private var firebaseViewModel = FirebaseViewModel()
-    @StateObject private var firebaseDataRetreival = FirebaseDataRetreivalForInterval()
+    @EnvironmentObject var firebaseViewModel: FirebaseViewModel
+    @EnvironmentObject var sdm: SensorDataManager
+    @EnvironmentObject var userSettings: UserSettings
     @StateObject private var firebaseUploadData = FirebaseUploadData()
+    
     @State var spinningDisc: Bool = false
     @State private var refresh = true
     @State var showHealthSheet: Bool = false
@@ -87,11 +87,6 @@ struct FirebaseHomeView: View {
                     LinearGradient(colors: colorScheme == .light ? [Color.theme.background.opacity(backgroundOpacityValue), Color.theme.background.opacity(backgroundOpacityValue/2)] : [Color.black], startPoint: .top, endPoint: .bottom).ignoresSafeArea(.all)
                     ScrollView {
                         sensorDataSection
-                            .onAppear {
-                                withAnimation(.easeInOut(duration: parameterLoadingBarDuration).repeatForever()) {
-                                isLoading.toggle()
-                                }
-                            }
                         VStack {
                             if listRowsVisible {
                                 lastUpdatedAtListRow.transition(.opacity.combined(with: .move(edge: .top)))
@@ -100,21 +95,29 @@ struct FirebaseHomeView: View {
                         pondControlSection
                     }
                 }
-            }.tag(Tab.home).environment(\.currentTab, $selectTab)
-            GenericDetailView(title: "Temperature", legendUnits: "\u{00B0}", accentColor: Color.theme.accent)
+            }
+            .tag(Tab.home)
+            .environment(\.currentTab, $selectTab)
+            ParameterDetailView(title: "Temperature", legendUnits: "\u{00B0}", accentColor: Color.theme.accent)
                 .tag(Tab.temperature).environment(\.currentTab, $selectTab)
-            GenericDetailView(title: "Water Level", legendUnits: " in", accentColor: Color.theme.accentBabyBlue)
+            ParameterDetailView(title: "Water Level", legendUnits: " in", accentColor: Color.theme.accentBabyBlue)
                 .tag(Tab.waterLevel).environment(\.currentTab, $selectTab)
-            GenericDetailView(title: "pH", legendUnits: "", accentColor: Color.theme.accentGreen)
+            ParameterDetailView(title: "pH", legendUnits: "", accentColor: Color.theme.accentGreen)
                 .tag(Tab.pH).environment(\.currentTab, $selectTab)
-            GenericDetailView(title: "Total Dissolved Solids", legendUnits: " ppm", accentColor: Color.theme.accentPeach)
+            ParameterDetailView(title: "Total Dissolved Solids", legendUnits: " ppm", accentColor: Color.theme.accentPeach)
                 .tag(Tab.tds).environment(\.currentTab, $selectTab)
-            GenericDetailView(title: "Turbidity", legendUnits: " NTU", accentColor: Color.theme.accentLavender)
+            ParameterDetailView(title: "Turbidity", legendUnits: " NTU", accentColor: Color.theme.accentLavender)
                 .tag(Tab.turbidity).environment(\.currentTab, $selectTab)
         }
         .tabViewStyle(PageTabViewStyle())
         .indexViewStyle(.page(backgroundDisplayMode: .interactive))
         .ignoresSafeArea(.all)
+        .onAppear {
+            firebaseViewModel.getFirebasePondParameters()
+            withAnimation(.easeInOut(duration: parameterLoadingBarDuration).repeatForever()) {
+                isLoading.toggle()
+            }
+        }
         .onChange(of: firebaseViewModel.pondParameters) { newValue in
             handleValueChangeAnimation(for: "temperature", in: newValue[0].temperature)
             handleValueChangeAnimation(for: "waterLevel", in: newValue[0].waterLevel)
@@ -127,7 +130,10 @@ struct FirebaseHomeView: View {
                 
 struct FirebaseHomeView_Previews: PreviewProvider {
     static var previews: some View {
-        FirebaseHomeView().environmentObject(UserSettings())
+        FirebaseHomeView()
+            .environmentObject(FirebaseViewModel())
+            .environmentObject(SensorDataManager())
+            .environmentObject(UserSettings())
     }
 }
 
@@ -300,7 +306,7 @@ extension FirebaseHomeView {
                                 .background(Color.clear)
                         } })
                     .withPressableStyle()
-                    .fullScreenCover(isPresented: $showRFRemote, content: { RFRemoteView(powerState: firebaseUploadData.getCurrentRFPowerState()) })
+                    .fullScreenCover(isPresented: $showRFRemote, content: {             RFRemoteView(firebaseUploadData: firebaseUploadData) })
                     .transition(.opacity.combined(with: .move(edge: .bottom)).combined(with: .scale))
                     Spacer()
                     Button(action: { showRFRemote2.toggle()
@@ -583,11 +589,16 @@ extension FirebaseHomeView {
     
     private var lastUpdatedAtListRow: some View {
         ZStack {
-            Text("Last updated \(Date().addingTimeInterval(0), style: .relative) ago")
-                .fontWeight(.semibold)
-                .foregroundColor(.secondary)
-                .font(.caption2)
-                .padding(5)
+            if let lastUpdated = firebaseViewModel.lastUpdated {
+                Text("Last updated \(lastUpdated.addingTimeInterval(0), style: .relative) ago")
+                    .fontWeight(.semibold)
+                    .foregroundColor(.secondary)
+                    .font(.caption2)
+                    .padding(5)
+            }
+        }
+        .onAppear {
+            firebaseViewModel.getLastUpdateTimestamp()
         }
     }
     

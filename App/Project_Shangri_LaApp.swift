@@ -10,8 +10,9 @@ import Firebase
 @main
 struct Project_Shangri_LaApp: App {
     
-    @StateObject var userSettings = UserSettings() // testing
-    @StateObject private var fvm = FirebaseDataService()
+    @StateObject var userSettings = UserSettings()
+    @StateObject var fvm = FirebaseViewModel()
+    @StateObject var sdm = SensorDataManager()
     @State private var showLaunchView: Bool = true
     
     init() {
@@ -23,14 +24,15 @@ struct Project_Shangri_LaApp: App {
         WindowGroup {
             ZStack {
                 FirebaseHomeView()
-                    .environmentObject(userSettings) // testing
+                    .environmentObject(userSettings)
+                    .environmentObject(fvm)
+                    .environmentObject(sdm)
                 ZStack {
                     if showLaunchView {
                         LaunchView(showLaunchView: $showLaunchView)
                     }
-                } //ZStack
-                .environmentObject(fvm)
+                }
             }
-        } //WindowGroup
-    } //Scene
-} //struct
+        }
+    }
+}

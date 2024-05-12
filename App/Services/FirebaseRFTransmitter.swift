@@ -17,23 +17,24 @@ class FirebaseUploadData: ObservableObject {
             
     var ref:DatabaseReference?
     var databaseHandle:DatabaseHandle?
+
+    let rfOnCode = "111111111111111100000001"
+    let rfOffCode = "111111111111111100000011"
     
-    init() {
-        self.rfPowerState = getCurrentRFPowerState()
-    }
-    
-    func getCurrentRFPowerState() -> Bool {
+    func getCurrentRFPowerState() {
         let ref = Database.database().reference()
-        ref.child("rfTransmitterCode/Power").getData(completion:  { error, snapshot in
+        ref.child("rfTransmitterCode/Power").getData(completion: { error, snapshot in
           guard error == nil else {
             print(error!.localizedDescription)
             return;
           }
-          let powerCode = snapshot.value as? String ?? "nil"
-            print("Current RFPowerState: \(powerCode)")
-            self.rfPowerState = powerCode == "111111111111111100000001" ? true : false
+            let powerCode = snapshot.value as? String ?? "nil"
+            let isOn = powerCode == self.rfOnCode
+            print("Current RFPowerState: \(powerCode) (\(isOn ? "On" : "Off"))")
+            DispatchQueue.main.async {
+                self.rfPowerState = powerCode == self.rfOnCode
+            }
         })
-        return self.rfPowerState
     }
     
     func uploadRFPowerSignal(rfPowerState: String) {
