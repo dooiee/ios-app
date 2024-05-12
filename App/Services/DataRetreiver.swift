@@ -31,9 +31,8 @@ class SensorDataManager: ObservableObject {
     func clearFetchedData() {
         DispatchQueue.main.async {
             self.sensorData.removeAll()
-            self.state = .idle  // Reset the state to idle, indicating no current data or operation
+            self.state = .idle
         }
-//        sensorData.removeAll()
     }
 
     func stopFetchingData() {
@@ -63,7 +62,6 @@ class SensorDataManager: ObservableObject {
                     DispatchQueue.main.async {
                         self.state = .error("No data available for this interval")
                     }
-//                    self.state = .error("No data available for this interval")
                 }
             })
     }
@@ -79,7 +77,7 @@ class SensorDataManager: ObservableObject {
         }
         
         for child in snapshot.children.allObjects as! [DataSnapshot] {
-//            print("Child: \(child)")
+//            print("Child: \(child)") // debug
             if let data = child.value as? [String: Any],
                let timestamp = data["timestamp"] as? Int,
                let value = data[parameterKey] as? Double {
@@ -91,8 +89,8 @@ class SensorDataManager: ObservableObject {
                 averages[key] = (averages[key] ?? 0) + ((value - (averages[key] ?? 0)) / Double(count))
             }
         }
-//        print("Average: \(averages)")
-//        print("Counts: \(counts)")
+//        print("Average: \(averages)") // debug
+//        print("Counts: \(counts)") // debug
         
         DispatchQueue.main.async {
             if averages.isEmpty {
