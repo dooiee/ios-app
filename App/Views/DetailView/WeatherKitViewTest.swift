@@ -354,7 +354,7 @@ struct DailyWeatherView: View {
     
     var body: some View {
         VStack {
-            if let errorMessage = errorMessage {
+            if let _ = errorMessage {
                 // Center the error message using GeometryReader
                 GeometryReader { geometry in
                     VStack {

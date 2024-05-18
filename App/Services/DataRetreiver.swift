@@ -106,7 +106,7 @@ class SensorDataManager: ObservableObject {
     private func getKeyForInterval(_ interval: TimeInterval) -> String {
         switch interval {
         case 1_000*60*60:
-            return "1H"
+            return "LIVE"
         case 1_000*60*60*23, 1_000*60*60*24:
             return "1D"
         case 1_000*60*60*24*7:
