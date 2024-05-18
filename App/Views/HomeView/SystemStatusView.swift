@@ -60,42 +60,7 @@ struct SystemStatusView: View {
                         }
                     }
                 }
-//                .refreshable {
-//                    arduinoVM.fetchLEDStatus()
-//                    arduinoVM.fetchNanoStatus()
-//                }
-            }.onAppear {
-                firebaseArduinoControl.getArduinoStatus()
-                showArduinoControl = firebaseArduinoControl.getArduinoResetStateBool()
             }
-            .onChange(of: firebaseArduinoControl.arduinoStatus) { newValue in
-                                if oldWifiRssiValue == nil {
-                                    oldWifiRssiValue = newValue[0].wifiRssi
-                                }
-                                if oldWifiRssiValue != newValue[0].wifiRssi {
-                                    oldWifiRssiValue = newValue[0].wifiRssi
-                                    withAnimation(.easeOut(duration: 0.5)) {
-                                        wifiRssiChanged.toggle()
-                                        //oldWifiRssiValue = newValue[0].wifiRssi
-                                    }
-                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                                        wifiRssiChanged.toggle()
-                                    }
-                                }
-                                if oldLastUpdateValue == nil {
-                                    oldLastUpdateValue = newValue[0].lastUpload
-                                }
-                                if oldLastUpdateValue != newValue[0].lastUpload {
-                                    oldLastUpdateValue = newValue[0].lastUpload
-                                    withAnimation(.easeOut(duration: 0.5)) {
-                                        lastUpdateValueChanged.toggle()
-                                        //oldWifiRssiValue = newValue[0].wifiRssi
-                                    }
-                                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                                        lastUpdateValueChanged.toggle()
-                                    }
-                                }
-                            }
             .background(colorScheme == .light ? Color(red: 0.949, green: 0.949, blue: 0.97) : Color.black)
             if showArduinoStatisticsView {
                 ArduinoStatisticsView(showArduinoStatisticsView: $showArduinoStatisticsView)
@@ -148,6 +113,9 @@ extension SystemStatusView {
                         .frame(width: 12.0, height: 12.0)
                         .padding(.horizontal, 2)
                 } else if arduinoVM.ledStatusError != nil {
+                    Text("Offline")
+                        .foregroundColor(Color.theme.batteryRed)
+                        .font(.subheadline).bold()
                     Image(systemName: "exclamationmark.triangle")
                         .foregroundColor(.yellow)
                         .onTapGesture {
@@ -186,16 +154,33 @@ extension SystemStatusView {
                                 .font(.subheadline)
                         }
                     } else {
-                        Text("Disconnected")
-                            .foregroundColor(.red)
-                            .font(.subheadline).bold()
-                        Circle()
-                            .foregroundColor(Color.theme.batteryRed)
-                            .frame(width: 12.0, height: 12.0)
-                            .padding(.horizontal, 2)
-                        Text("Last connected: \(nanoStatus.timeSinceLastConnection ?? 0) seconds ago")
-                            .foregroundColor(.secondary)
-                            .font(.subheadline)
+                        VStack(alignment: .trailing) {
+                            HStack {
+                                Text("Disconnected")
+                                    .foregroundColor(Color.theme.batteryRed)
+                                    .font(.subheadline).bold()
+                                Circle()
+                                    .foregroundColor(Color.theme.batteryRed)
+                                    .frame(width: 12.0, height: 12.0)
+                                    .padding(.horizontal, 2)
+                            }
+                            if let timeSinceLastConnection = nanoStatus.timeSinceLastConnection {
+                                let lastConnectedDate = Date(timeIntervalSinceNow: -TimeInterval(timeSinceLastConnection))
+                                Text("Last connected \(lastConnectedDate, style: .relative) ago")
+                                    .foregroundColor(.secondary)
+                                    .font(.caption)
+                            }
+                        }
+//                        Text("Disconnected")
+//                            .foregroundColor(Color.theme.batteryRed)
+//                            .font(.subheadline).bold()
+//                        Circle()
+//                            .foregroundColor(Color.theme.batteryRed)
+//                            .frame(width: 12.0, height: 12.0)
+//                            .padding(.horizontal, 2)
+//                        Text("Last connected: \(nanoStatus.timeSinceLastConnection ?? 0) seconds ago")
+//                            .foregroundColor(.secondary)
+//                            .font(.subheadline)
                     }
                 } else if arduinoVM.nanoStatusError != nil {
                     Image(systemName: "exclamationmark.triangle")

@@ -306,7 +306,7 @@ extension FirebaseHomeView {
                                 .background(Color.clear)
                         } })
                     .withPressableStyle()
-                    .fullScreenCover(isPresented: $showRFRemote, content: {             RFRemoteView(firebaseUploadData: firebaseUploadData) })
+                    .fullScreenCover(isPresented: $showRFRemote, content: { RFRemoteView(firebaseUploadData: firebaseUploadData) })
                     .transition(.opacity.combined(with: .move(edge: .bottom)).combined(with: .scale))
                     Spacer()
                     Button(action: { showRFRemote2.toggle()

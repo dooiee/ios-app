@@ -25,7 +25,7 @@ class ArduinoViewModel: ObservableObject {
     // New function that wraps the fetching process
     func fetchStatusesSequentially() async {
         await fetchLEDStatusAsync()
-//        await fetchNanoStatus()
+        await fetchNanoStatus()
     }
     
     func fetchLEDStatus() {
@@ -94,6 +94,7 @@ class ArduinoViewModel: ObservableObject {
                 do {
                     self.nanoStatus = try JSONDecoder().decode(NanoStatus.self, from: data)
                     self.nanoStatusError = nil
+                    print("Nano Status: \(String(describing: self.nanoStatus))")
                 } catch {
                     self.nanoStatusError = "Decoding error: \(error.localizedDescription)"
                 }
@@ -116,7 +117,7 @@ struct LEDStatus: Codable {
 struct NanoStatus: Codable {
     var connected: Bool
     var signalStrength: Int?
-    var timeSinceLastConnection: Int? // Time in seconds
+    var timeSinceLastConnection: Int?
 
     enum CodingKeys: String, CodingKey {
         case connected
