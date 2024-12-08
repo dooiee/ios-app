@@ -13,6 +13,7 @@ struct SystemStatusView: View {
     @Environment(\.openURL) var openURL
     
     @StateObject private var arduinoVM = ArduinoViewModel()
+    @StateObject private var piServerVM = PiServerViewModel()
 
     let urlFirebaseConsole = Constants.FirebaseDb.Credentials.FIREBASE_CONSOLE_URL
     
@@ -42,7 +43,8 @@ struct SystemStatusView: View {
             VStack {
                 headerSection
                 List {
-                    statusSection
+                    // statusSection
+                    piServerStatusSection
 //                    centralHubStatusSection
 //                    peripheralStatusSection
 //                    rfTransmitterStatusSection
@@ -53,11 +55,9 @@ struct SystemStatusView: View {
                     statisticsSection
                 }
                 .refreshable {
-                    arduinoVM.resetStatuses()
+                    piServerVM.resetStatuses()
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {  // Delay before fetching
-                        Task {
-                            await arduinoVM.fetchStatusesSequentially()
-                        }
+                        piServerVM.fetchStatus()
                     }
                 }
             }
@@ -90,6 +90,103 @@ extension SystemStatusView {
                     .font(.title)
                     .padding()
             }
+        }
+    }
+
+    private var piServerStatusSection: some View {
+        Section(header: Text("Status")) {
+            HStack {
+                Image(systemName: "cable.connector.horizontal")
+                    .symbolRenderingMode(.hierarchical)
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .padding(.trailing, 2.0)
+                    .frame(width: 22, height: 22)
+                Text("Pi Server").foregroundColor(Color.primary)
+                Spacer()
+                if let serverStatus = piServerVM.serverStatus {
+                    Text(serverStatus.status)
+                        .foregroundColor(.secondary)
+                        .font(.subheadline).bold()
+                    Text("Last Updated: \(serverStatus.timestamp)")
+                        .foregroundColor(.secondary)
+                        .font(.caption)
+                } else if let serverStatusError = piServerVM.serverStatusError {
+                    Text("Error")
+                        .foregroundColor(.red)
+                        .font(.subheadline).bold()
+                    Text(serverStatusError)
+                        .foregroundColor(.secondary)
+                        .font(.caption)
+                } else {
+                    Text("Fetching...")
+                        .foregroundColor(Color.secondary)
+                        .font(.subheadline)
+                }
+            }
+            HStack {
+                Image(systemName: "antenna.radiowaves.left.and.right")
+                    .symbolRenderingMode(.hierarchical)
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .padding(.trailing, 2.0)
+                    .frame(width: 22, height: 22)
+                Text("Peripheral").foregroundColor(Color.primary)
+                Spacer()
+                if let peripheralStatus = piServerVM.peripheralStatus {
+                    if peripheralStatus.connected {
+                        Text("Connected")
+                            .foregroundColor(.secondary)
+                            .font(.subheadline).bold()
+                        Circle()
+                            .foregroundColor(Color.theme.batteryGreen)
+                            .frame(width: 12.0, height: 12.0)
+                            .padding(.horizontal, 2)
+                        if let rssi = peripheralStatus.signalStrength {
+                            Text("RSSI: \(rssi) dBm")
+                                .foregroundColor(.secondary)
+                                .font(.subheadline)
+                        }
+                    } else {
+                        VStack(alignment: .trailing) {
+                            HStack {
+                                Text("Disconnected")
+                                    .foregroundColor(Color.theme.batteryRed)
+                                    .font(.subheadline).bold()
+                                Circle()
+                                    .foregroundColor(Color.theme.batteryRed)
+                                    .frame(width: 12.0, height: 12.0)
+                                    .padding(.horizontal, 2)
+                            }
+                            if let lastConnectionTime = peripheralStatus.timeSinceLastConnection {
+                                Text("Last connected: \(lastConnectionTime)")
+                                    .foregroundColor(.secondary)
+                                    .font(.caption)
+                            }
+                        }
+                    }
+                } else if let peripheralStatusError = piServerVM.peripheralStatusError {
+                    Text("Error")
+                        .foregroundColor(.red)
+                        .font(.subheadline).bold()
+                    Text(peripheralStatusError)
+                        .foregroundColor(.secondary)
+                        .font(.caption)
+                } else {
+                    Text("Fetching...")
+                        .foregroundColor(.gray)
+                        .font(.subheadline)
+                }
+            }
+        }
+        .onAppear {
+            piServerVM.resetStatuses()
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {  // Delay before fetching
+                piServerVM.fetchStatus()
+            }
+        }
+        .onDisappear {
+            piServerVM.resetStatuses()
         }
     }
     

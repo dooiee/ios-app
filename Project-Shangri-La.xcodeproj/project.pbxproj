@@ -57,6 +57,7 @@
 		BE6AF2672BAF7A08009EBEC1 /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE6AF2662BAF7A08009EBEC1 /* Constants.swift */; };
 		BE6AF2692BAF7ABA009EBEC1 /* Project_Shangri_LaApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE6AF2682BAF7ABA009EBEC1 /* Project_Shangri_LaApp.swift */; };
 		BE6AF26B2BAF7BE5009EBEC1 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = BE6AF26A2BAF7BE5009EBEC1 /* GoogleService-Info.plist */; };
+		BE8CFC3B2D054490007DA736 /* PiServerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE8CFC3A2D054490007DA736 /* PiServerViewModel.swift */; };
 		CDEDB58329F5EE935AB0FDF3 /* Pods_Project_Shangri_La.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5EFB6587E1E790A401430FD1 /* Pods_Project_Shangri_La.framework */; };
 /* End PBXBuildFile section */
 
@@ -106,6 +107,7 @@
 		BE6AF2662BAF7A08009EBEC1 /* Constants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		BE6AF2682BAF7ABA009EBEC1 /* Project_Shangri_LaApp.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Project_Shangri_LaApp.swift; sourceTree = "<group>"; };
 		BE6AF26A2BAF7BE5009EBEC1 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		BE8CFC3A2D054490007DA736 /* PiServerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PiServerViewModel.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -212,6 +214,7 @@
 		BE6AF2122BAF762A009EBEC1 /* ViewModels */ = {
 			isa = PBXGroup;
 			children = (
+				BE8CFC3A2D054490007DA736 /* PiServerViewModel.swift */,
 				BE6AF2102BAF762A009EBEC1 /* FirebaseViewModel.swift */,
 				BE6AF2112BAF762A009EBEC1 /* UserSettings.swift */,
 				BE449DF42BB0D2DA00989741 /* ArduinoViewModel.swift */,
@@ -438,6 +441,7 @@
 				BE6AF2452BAF762A009EBEC1 /* WeatherKitViewTest.swift in Sources */,
 				BE6AF2442BAF762A009EBEC1 /* GenericViewSettings.swift in Sources */,
 				BE6AF24A2BAF762A009EBEC1 /* RFRemoteView.swift in Sources */,
+				BE8CFC3B2D054490007DA736 /* PiServerViewModel.swift in Sources */,
 				BE6AF22E2BAF762A009EBEC1 /* HapticManager.swift in Sources */,
 				BE6AF2432BAF762A009EBEC1 /* GenericDetailView.swift in Sources */,
 				BE6AF2362BAF762A009EBEC1 /* FirebaseArduinoStatistics.swift in Sources */,
