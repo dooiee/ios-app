@@ -22,5 +22,8 @@
 # xcuserdata files
 **/xcuserdata/
 
+# xcshareddata folder
+**/xcshareddata/
+
 # Pods
 Pods/
