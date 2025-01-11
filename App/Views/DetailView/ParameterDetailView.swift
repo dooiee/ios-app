@@ -74,6 +74,13 @@ struct ParameterDetailView: View {
                     .onDisappear {
                         sensorDataManager.clearFetchedData()
                     }
+                    .onChange(of: userSettings.debugMode) { newValue in
+                        UserSettings.shared.debugMode = newValue
+//                        sensorDataManager.updateDatabaseReference()
+                        // Update the reference in SensorDataManager and fetch data
+                        sensorDataManager.clearFetchedData() // Clear old data
+                        fetchData()
+                    }
                 }
             }
             if showSettingsPage {
@@ -335,7 +342,7 @@ struct ParameterDetailView: View {
                     }
                     if index == 2 {
                         VStack(alignment: .leading, spacing: 5) {
-                            Label("RAINFALL", systemImage: "drop.fill")
+                            Label("PRECIPITATION", systemImage: "drop.fill")
                                 .font(.footnote)
                                 .foregroundStyle(.secondary)
                             Divider().background(Color.primary)

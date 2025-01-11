@@ -45,6 +45,7 @@ struct FirebaseHomeView: View {
     @State var spinningDisc: Bool = false
     @State private var refresh = true
     @State var showHealthSheet: Bool = false
+    @State var showSettingsSheet: Bool = false
     @State private var listRowsVisible: Bool = true
     @State private var remoteControlsVisible: Bool = true
 
@@ -149,7 +150,8 @@ extension FirebaseHomeView {
                     .foregroundColor(Color.primary)
                 .font(.system(size: 20))
                 Spacer()
-                navigationBarHealthIconButtonSheet
+                navigationBarSettingsIconButtonSheet
+//                navigationBarHealthIconButtonSheet
             }
             .padding(.horizontal)
         }
@@ -673,6 +675,19 @@ extension FirebaseHomeView {
         .withPressableStyle()
         .fullScreenCover(isPresented: $showRTSPStreamPage, content: { RTSPStreamView() })
         .transition(.opacity.combined(with: .move(edge: .bottom)).combined(with: .scale))
+    }
+    
+    private var navigationBarSettingsIconButtonSheet: some View {
+        Button(action: { showSettingsSheet.toggle() }) {
+            Image(systemName: "gearshape")
+                .foregroundColor(colorScheme == .light ? Color.black : Color.secondary)
+                .symbolRenderingMode(.palette)
+                .shadow(color: Color.primary.opacity(0.5), radius: 2, x: 1, y: 1)
+                .font(.system(size: 30).weight(.regular))
+        }
+        .sheet(isPresented: $showSettingsSheet, content: {
+            NotificationSettingsSheet()
+        })
     }
 }
 

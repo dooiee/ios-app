@@ -97,7 +97,7 @@ struct HourlyForcastViewModel: View {
                                     Text(hourWeatherItem.date.formatAsAbbreviatedTime(timezone: "EST")).font(.system(size: 16, weight: .medium))
                                 }
                                 Spacer()
-                                if hourWeatherItem.symbolName != "wind" {
+                                if hourWeatherItem.symbolName != "wind" && hourWeatherItem.symbolName != "snowflake" {
                                     Image(systemName: "\(hourWeatherItem.symbolName).fill")
                                         .symbolRenderingMode(.multicolor)
                                         .foregroundColor(.gray)
@@ -280,7 +280,7 @@ struct DailyWeatherViewModel: View {
                         ForEach(dailyWeatherList, id: \.date) { dailyWeather in
                             HStack (spacing: 20) {
                                 Text(dailyWeather.date.formatAsAbbreviatedDay()).font(.system(size: 16, weight: .medium)).frame(width: 45.0, alignment: .leading)
-                                if dailyWeather.symbolName != "wind" {
+                                if dailyWeather.symbolName != "wind" && dailyWeather.symbolName != "snowflake" {
                                     Image(systemName: "\(dailyWeather.symbolName).fill")
                                         .symbolRenderingMode(.multicolor)
                                     //                                .foregroundColor(.gray)

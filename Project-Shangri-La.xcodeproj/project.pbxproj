@@ -7,6 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		BE1957E62D29D1D500A60E48 /* NotificationSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE1957E52D29D1D500A60E48 /* NotificationSettingsView.swift */; };
+		BE1957E82D29D26200A60E48 /* NotificationSettingModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE1957E72D29D26200A60E48 /* NotificationSettingModel.swift */; };
+		BE1957EA2D29D2BA00A60E48 /* NotificationSettingsSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE1957E92D29D2BA00A60E48 /* NotificationSettingsSheet.swift */; };
+		BE1957EC2D2A05B600A60E48 /* FirebaseMessaging in Frameworks */ = {isa = PBXBuildFile; productRef = BE1957EB2D2A05B600A60E48 /* FirebaseMessaging */; };
+		BE1957F22D2A37B000A60E48 /* NotificationDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE1957F02D2A37B000A60E48 /* NotificationDelegate.swift */; };
 		BE3F9FF82BEFD73300B631E7 /* DataRetreiver.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE3F9FF72BEFD73300B631E7 /* DataRetreiver.swift */; };
 		BE3F9FFA2BEFF79500B631E7 /* ParameterDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE3F9FF92BEFF79500B631E7 /* ParameterDetailView.swift */; };
 		BE449DF52BB0D2DA00989741 /* ArduinoViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = BE449DF42BB0D2DA00989741 /* ArduinoViewModel.swift */; };
@@ -65,6 +70,12 @@
 		06197D0EA1ED6CB8F535253F /* Pods-Project-Shangri-La.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Project-Shangri-La.debug.xcconfig"; path = "Target Support Files/Pods-Project-Shangri-La/Pods-Project-Shangri-La.debug.xcconfig"; sourceTree = "<group>"; };
 		50313E9E2ABD8B9C4D99A75E /* Pods-Project-Shangri-La.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Project-Shangri-La.release.xcconfig"; path = "Target Support Files/Pods-Project-Shangri-La/Pods-Project-Shangri-La.release.xcconfig"; sourceTree = "<group>"; };
 		5EFB6587E1E790A401430FD1 /* Pods_Project_Shangri_La.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Project_Shangri_La.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		BE1957E52D29D1D500A60E48 /* NotificationSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationSettingsView.swift; sourceTree = "<group>"; };
+		BE1957E72D29D26200A60E48 /* NotificationSettingModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationSettingModel.swift; sourceTree = "<group>"; };
+		BE1957E92D29D2BA00A60E48 /* NotificationSettingsSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationSettingsSheet.swift; sourceTree = "<group>"; };
+		BE1957F02D2A37B000A60E48 /* NotificationDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationDelegate.swift; sourceTree = "<group>"; };
+		BE1957F32D30C80400A60E48 /* Project-Shangri-La.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "Project-Shangri-La.entitlements"; sourceTree = "<group>"; };
+		BE1957F42D31FDF500A60E48 /* Project-Shangri-La-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "Project-Shangri-La-Info.plist"; sourceTree = "<group>"; };
 		BE3F9FF72BEFD73300B631E7 /* DataRetreiver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataRetreiver.swift; sourceTree = "<group>"; };
 		BE3F9FF92BEFF79500B631E7 /* ParameterDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParameterDetailView.swift; sourceTree = "<group>"; };
 		BE449DF42BB0D2DA00989741 /* ArduinoViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ArduinoViewModel.swift; sourceTree = "<group>"; };
@@ -124,6 +135,7 @@
 				BE6AF2632BAF784A009EBEC1 /* DequeModule in Frameworks */,
 				BE6AF2552BAF76EE009EBEC1 /* FirebaseDatabase in Frameworks */,
 				BE6AF2532BAF76EE009EBEC1 /* FirebaseAuth in Frameworks */,
+				BE1957EC2D2A05B600A60E48 /* FirebaseMessaging in Frameworks */,
 				CDEDB58329F5EE935AB0FDF3 /* Pods_Project_Shangri_La.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -148,9 +160,19 @@
 			path = Pods;
 			sourceTree = "<group>";
 		};
+		BE1957F12D2A37B000A60E48 /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+				BE1957F02D2A37B000A60E48 /* NotificationDelegate.swift */,
+			);
+			path = Utilities;
+			sourceTree = "<group>";
+		};
 		BE6AF1E22BAF71C6009EBEC1 = {
 			isa = PBXGroup;
 			children = (
+				BE1957F42D31FDF500A60E48 /* Project-Shangri-La-Info.plist */,
+				BE1957F32D30C80400A60E48 /* Project-Shangri-La.entitlements */,
 				BE6AF22C2BAF762A009EBEC1 /* App */,
 				BE6AF1EC2BAF71C6009EBEC1 /* Products */,
 				6DC6978F022FC78794B20D47 /* Frameworks */,
@@ -184,6 +206,7 @@
 				BE6AF2012BAF762A009EBEC1 /* ArduinoStatisticsModel.swift */,
 				BE6AF2022BAF762A009EBEC1 /* FirebaseModel.swift */,
 				BE6AF2032BAF762A009EBEC1 /* WeatherModel.swift */,
+				BE1957E72D29D26200A60E48 /* NotificationSettingModel.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -256,6 +279,8 @@
 				BE6AF2222BAF762A009EBEC1 /* RFRemoteView.swift */,
 				BE6AF2232BAF762A009EBEC1 /* SolenoidControlView.swift */,
 				BE6AF2242BAF762A009EBEC1 /* SystemStatusView.swift */,
+				BE1957E52D29D1D500A60E48 /* NotificationSettingsView.swift */,
+				BE1957E92D29D2BA00A60E48 /* NotificationSettingsSheet.swift */,
 			);
 			path = HomeView;
 			sourceTree = "<group>";
@@ -283,6 +308,7 @@
 		BE6AF22C2BAF762A009EBEC1 /* App */ = {
 			isa = PBXGroup;
 			children = (
+				BE1957F12D2A37B000A60E48 /* Utilities */,
 				BE6AF26A2BAF7BE5009EBEC1 /* GoogleService-Info.plist */,
 				BE6AF1FF2BAF762A009EBEC1 /* Extensions */,
 				BE6AF2042BAF762A009EBEC1 /* Models */,
@@ -323,6 +349,7 @@
 				BE6AF2602BAF784A009EBEC1 /* Collections */,
 				BE6AF2622BAF784A009EBEC1 /* DequeModule */,
 				BE6AF2642BAF784A009EBEC1 /* OrderedCollections */,
+				BE1957EB2D2A05B600A60E48 /* FirebaseMessaging */,
 			);
 			productName = "Project-Shangri-La";
 			productReference = BE6AF1EB2BAF71C6009EBEC1 /* Project-Shangri-La.app */;
@@ -431,6 +458,7 @@
 				BE6AF2322BAF762A009EBEC1 /* FirebaseModel.swift in Sources */,
 				BE6AF24C2BAF762A009EBEC1 /* SystemStatusView.swift in Sources */,
 				BE3F9FF82BEFD73300B631E7 /* DataRetreiver.swift in Sources */,
+				BE1957F22D2A37B000A60E48 /* NotificationDelegate.swift in Sources */,
 				BE6AF2492BAF762A009EBEC1 /* FirebaseTestFunction.swift in Sources */,
 				BE6AF2422BAF762A009EBEC1 /* CommandPanelView.swift in Sources */,
 				BE6AF2402BAF762A009EBEC1 /* TESTArduinoColorPicker.swift in Sources */,
@@ -442,9 +470,11 @@
 				BE6AF2442BAF762A009EBEC1 /* GenericViewSettings.swift in Sources */,
 				BE6AF24A2BAF762A009EBEC1 /* RFRemoteView.swift in Sources */,
 				BE8CFC3B2D054490007DA736 /* PiServerViewModel.swift in Sources */,
+				BE1957E62D29D1D500A60E48 /* NotificationSettingsView.swift in Sources */,
 				BE6AF22E2BAF762A009EBEC1 /* HapticManager.swift in Sources */,
 				BE6AF2432BAF762A009EBEC1 /* GenericDetailView.swift in Sources */,
 				BE6AF2362BAF762A009EBEC1 /* FirebaseArduinoStatistics.swift in Sources */,
+				BE1957E82D29D26200A60E48 /* NotificationSettingModel.swift in Sources */,
 				BE6AF2332BAF762A009EBEC1 /* WeatherModel.swift in Sources */,
 				BE6AF2412BAF762A009EBEC1 /* ArduinoStatisticsView.swift in Sources */,
 				BE6AF24B2BAF762A009EBEC1 /* SolenoidControlView.swift in Sources */,
@@ -457,6 +487,7 @@
 				BE6AF2342BAF762A009EBEC1 /* FirebaseDataService.swift in Sources */,
 				BE6AF2462BAF762A009EBEC1 /* ArduinoControlView.swift in Sources */,
 				BE6AF23C2BAF762A009EBEC1 /* UserSettings.swift in Sources */,
+				BE1957EA2D29D2BA00A60E48 /* NotificationSettingsSheet.swift in Sources */,
 				BE6AF22F2BAF762A009EBEC1 /* UnixConversion.swift in Sources */,
 				BE6AF2372BAF762A009EBEC1 /* FirebaseCommandPanelControl.swift in Sources */,
 				BE6AF2302BAF762A009EBEC1 /* ArduinoModel.swift in Sources */,
@@ -594,13 +625,15 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "Project-Shangri-La.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_ASSET_PATHS = "";
 				DEVELOPMENT_TEAM = MMFJ246YZU;
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Project-Shangri-La-Info.plist";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -611,7 +644,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.1.0;
+				MARKETING_VERSION = 2.3.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "Dooie.Project-Shangri-La";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -629,13 +662,15 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "Project-Shangri-La.entitlements";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEVELOPMENT_ASSET_PATHS = "";
 				DEVELOPMENT_TEAM = MMFJ246YZU;
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Project-Shangri-La-Info.plist";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -646,7 +681,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.1.0;
+				MARKETING_VERSION = 2.3.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "Dooie.Project-Shangri-La";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
@@ -710,6 +745,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		BE1957EB2D2A05B600A60E48 /* FirebaseMessaging */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = BE6AF2512BAF76EE009EBEC1 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseMessaging;
+		};
 		BE6AF2522BAF76EE009EBEC1 /* FirebaseAuth */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = BE6AF2512BAF76EE009EBEC1 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;

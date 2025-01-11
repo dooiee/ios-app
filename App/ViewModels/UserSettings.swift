@@ -9,6 +9,8 @@ import SwiftUI
 import Combine
 
 class UserSettings: ObservableObject {
+    static let shared = UserSettings()
+
     @Published var defaultCamera: IPCamera {
         didSet {
             UserDefaults.standard.set(defaultCamera.rawValue, forKey: "defaultCamera")
@@ -20,7 +22,12 @@ class UserSettings: ObservableObject {
             UserDefaults.standard.set(defaultPlotInterval, forKey: "defaultPlotInterval")
         }
     }
-
+    
+    @Published var debugMode: Bool {
+        didSet {
+            UserDefaults.standard.set(debugMode, forKey: "debugMode")
+        }
+    }
 
     init() {
         if let defaultCamera = UserDefaults.standard.string(forKey: "defaultCamera") {
@@ -33,6 +40,12 @@ class UserSettings: ObservableObject {
             self.defaultPlotInterval = defaultPlotInterval
         } else {
             self.defaultPlotInterval = "1D"
+        }
+        
+        if let debugMode = UserDefaults.standard.value(forKey: "debugMode") as? Bool {
+            self.debugMode = debugMode
+        } else {
+            self.debugMode = false
         }
     }
 }

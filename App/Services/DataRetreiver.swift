@@ -15,16 +15,38 @@ class SensorDataManager: ObservableObject {
     enum DataFetchState: Equatable {
         case idle, loading, loaded, error(String)
     }
-    
+        
     @Published var sensorData = [String: OrderedDictionary<String, Double>]()
     @Published var state: DataFetchState = .idle
+    private var cancellables = Set<AnyCancellable>()
     
     let formatter = DateFormatter()
-    let ref = Database.database().reference(withPath: "Log/SensorData")
-    
+    private var ref: DatabaseReference
+        
     init() {
         formatter.timeZone = TimeZone(abbreviation: "EST")
         formatter.locale = NSLocale.current
+        
+        ref = Database.database().reference(
+            withPath: UserSettings.shared.debugMode ? "Debug/Log/SensorData" : "Log/SensorData"
+        )
+        observeDebugModeChanges()
+    }
+    
+    private func observeDebugModeChanges() {
+        UserSettings.shared.$debugMode
+            .sink { [weak self] newValue in
+                print("Debug mode changed in SensorDataManager: \(newValue)") // Debug print
+                self?.updateDatabaseReference(newValue: newValue)
+            }
+            .store(in: &cancellables)
+    }
+    
+    private func updateDatabaseReference(newValue: Bool) {
+        ref = Database.database().reference(
+            withPath: newValue ? "Debug/Log/SensorData" : "Log/SensorData"
+        )
+        print("Database reference updated to: \(ref)")
     }
     
     // Clear all fetched data

@@ -23,6 +23,7 @@ struct GenericViewSettings: View {
             VStack {
                 headerSection
                 List {
+                    debugModeSection
                     firebaseLinkSection
                     plotSection
                 }
@@ -53,6 +54,20 @@ extension GenericViewSettings {
                     .foregroundColor(Color.clear)
                     .font(.title)
                     .padding()
+            }
+        }
+    }
+    private var debugModeSection: some View {
+        Section(header: Text("Debug Settings")) {
+            HStack {
+                Image(systemName: "ant.fill") // Bug icon
+                    .symbolRenderingMode(.hierarchical)
+                    .foregroundStyle(.red, .black)
+                    .imageScale(.medium)
+                    .padding(.trailing, 8)
+
+                Toggle("Debug Mode", isOn: $userSettings.debugMode)
+                    .toggleStyle(SwitchToggleStyle(tint: .blue))
             }
         }
     }
@@ -96,5 +111,6 @@ extension GenericViewSettings {
 struct GenericViewSettings_Previews: PreviewProvider {
     static var previews: some View {
         GenericViewSettings(showSettingsPage: .constant(true))
+            .environmentObject(UserSettings())
     }
 }
